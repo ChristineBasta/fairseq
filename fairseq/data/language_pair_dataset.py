@@ -22,6 +22,8 @@ def collate(
     input_feeding=True,
     pad_to_length=None,
     pad_to_multiple=1,
+    lf_reps=None,
+    sen_doc_align= None
 ):
     if len(samples) == 0:
         return {}
@@ -109,13 +111,22 @@ def collate(
             )
     else:
         ntokens = src_lengths.sum().item()
+    #lf_reps
+    embedding_size=728
+    for index in id:
+        #get doc_index
+        doc_index = sen_doc_align[index]
+        doc_reps_tensor = torch.zeros((id.size,1, embedding_size), dtype=torch.float64)
+        doc_reps_tensor[index]=lf_reps[doc_index]
 
     batch = {
+        # todo(christine) add in net_input the log_former output..I guess we need to send it withe the correct dimensions
         "id": id,
         "nsentences": len(samples),
         "ntokens": ntokens,
-        "net_input": {"src_tokens": src_tokens, "src_lengths": src_lengths,},
+        "net_input": {"src_tokens": src_tokens, "src_lengths": src_lengths, "lf_reps": doc_reps_tensor},
         "target": target,
+
     }
     if prev_output_tokens is not None:
         batch["net_input"]["prev_output_tokens"] = prev_output_tokens.index_select(
@@ -223,6 +234,8 @@ class LanguagePairDataset(FairseqDataset):
         src_lang_id=None,
         tgt_lang_id=None,
         pad_to_multiple=1,
+        lf_reps=None, #longformer represenations
+        sen_doc_align=None,
     ):
         if tgt_dict is not None:
             assert src_dict.pad() == tgt_dict.pad()
@@ -294,6 +307,8 @@ class LanguagePairDataset(FairseqDataset):
         else:
             self.buckets = None
         self.pad_to_multiple = pad_to_multiple
+        self.lf_reps = lf_reps
+        self.sen_doc_align = sen_doc_align
 
     def get_batch_shapes(self):
         return self.buckets
@@ -383,6 +398,8 @@ class LanguagePairDataset(FairseqDataset):
             input_feeding=self.input_feeding,
             pad_to_length=pad_to_length,
             pad_to_multiple=self.pad_to_multiple,
+            lf_reps=self.lf_reps,
+            sen_doc_align=self.sen_doc_align
         )
         if self.src_lang_id is not None or self.tgt_lang_id is not None:
             src_tokens = res["net_input"]["src_tokens"]
@@ -421,6 +438,7 @@ class LanguagePairDataset(FairseqDataset):
             self.tgt_sizes[index] if self.tgt_sizes is not None else 0,
         )
 
+    # todo(christine)...is all data shuffled?
     def ordered_indices(self):
         """Return an ordered list of indices. Batches will be constructed based
         on this order."""

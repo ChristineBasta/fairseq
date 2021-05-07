@@ -423,12 +423,16 @@ class TransformerEncoder(FairseqEncoder):
         return layer
 
     def forward_embedding(
-        self, src_tokens, token_embedding: Optional[torch.Tensor] = None
+        self, src_tokens, token_embedding: Optional[torch.Tensor] = None, lf_reps: Optional = None,
     ):
+
         # embed tokens and positions
         if token_embedding is None:
             token_embedding = self.embed_tokens(src_tokens)
+
         x = embed = self.embed_scale * token_embedding
+        # TODO(Christine) lf_reps in the first <doc> token!
+        x[:, 0] = lf_reps
         if self.embed_positions is not None:
             x = embed + self.embed_positions(src_tokens)
         if self.layernorm_embedding is not None:
@@ -442,6 +446,7 @@ class TransformerEncoder(FairseqEncoder):
         self,
         src_tokens,
         src_lengths: Optional[torch.Tensor] = None,
+        lf_reps:Optional= None,
         return_all_hiddens: bool = False,
         token_embeddings: Optional[torch.Tensor] = None,
     ):
@@ -470,6 +475,7 @@ class TransformerEncoder(FairseqEncoder):
         """
         return self.forward_scriptable(src_tokens,
                                        src_lengths,
+                                       lf_reps,
                                        return_all_hiddens,
                                        token_embeddings)
 
@@ -481,6 +487,7 @@ class TransformerEncoder(FairseqEncoder):
         self,
         src_tokens,
         src_lengths: Optional[torch.Tensor] = None,
+        lf_reps: Optional= None,
         return_all_hiddens: bool = False,
         token_embeddings: Optional[torch.Tensor] = None,
     ):
@@ -511,7 +518,7 @@ class TransformerEncoder(FairseqEncoder):
         encoder_padding_mask = src_tokens.eq(self.padding_idx)
         has_pads = (src_tokens.device.type == "xla" or encoder_padding_mask.any())
 
-        x, encoder_embedding = self.forward_embedding(src_tokens, token_embeddings)
+        x, encoder_embedding = self.forward_embedding(src_tokens, token_embeddings, lf_reps)
 
         # account for padding while computing the representation
         if has_pads:
