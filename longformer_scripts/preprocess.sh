@@ -8,17 +8,17 @@
 #SBATCH --output=preprocess-detok.log
 
 
-WORKING_DIR="/home/usuaris/veu/cescola/wmt20/detok"
+WORKING_DIR="/home/usuaris/veu/cescola/wmt20/detok"   #data
 SRC="ta"
 TGT="dk"
 
 TRN_PREF="train"
 VAL_PREF="valid"
 TES_PREF="test"
-PYTHON="/home/usuaris/veu/cescola/virtualenv-16.0.0/torch/bin/python"
-FAIRSEQ_DIR="/home/usuaris/veu/cescola/fairseq"
+PYTHON="/home/usuaris/veu/cescola/virtualenv-16.0.0/torch/bin/python" #python library
+FAIRSEQ_DIR="/home/usuaris/veu/cescola/fairseq" #fairseq directory
 
-DEST_DIR="data-bin/eu"
+DEST_DIR="data-bin/eu"  #data final library
 
 mkdir $DEST_DIR
 

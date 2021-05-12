@@ -2,7 +2,8 @@
 
 
 import os
-
+import logging
+import argparse
 import torch
 # to add  number to the beginning of the name
 # we treat files as separated docs, we have Europarl, news and TED FILES
@@ -66,6 +67,23 @@ def read_doc_by_num(eng_dir, num):
     print(file_path)
     doc_string=''
     lines_paragraphs_indices=[]
+    with open(file_path) as fp:
+        line = fp.readline()
+        count = 1
+
+        while line:
+            #print("Line {}: {}".format(count, line.strip()))
+            line = fp.readline()
+            if(count > 1):
+                doc_string=doc_string +' '+ (line.strip())
+                lines_paragraphs_indices.append(count)
+
+            count += 1
+    return doc_string.strip(), lines_paragraphs_indices
+
+def get_text_from_file(file_path):
+    lines_paragraphs_indices=[]
+    doc_string = ''
     with open(file_path) as fp:
         line = fp.readline()
         count = 1
@@ -162,20 +180,37 @@ def write_all_docs(eng_dir, lang_dir, eng_file_all_name, lang_pair_file_all_name
     return sent_doc_dic
 if __name__ == "__main__":
 
-    eng_directory = '/home/christine/news-commentary/aligned/German-English/English'
-    lang_directory = '/home/christine/news-commentary/aligned/German-English/German'
+    #eng_directory = '/home/christine/news-commentary/aligned/German-English/English'
+    #lang_directory = '/home/christine/news-commentary/aligned/German-English/German'
+    #eng_file_all_name='/home/christine/news-commentary/aligned/German-English/all_data.eng'
+    #lang_pair_file_all_name='/home/christine/news-commentary/aligned/German-English/all_data.de'
 
-    #take care not to add it to the directory you count the files not to be counted
-    eng_file_all_name='/home/christine/news-commentary/aligned/German-English/all_data.eng'
-    lang_pair_file_all_name='/home/christine/news-commentary/aligned/German-English/all_data.de'
-    #doc_str, doc_list, paraphs_indices=read_doc_by_num(eng_directory, lang_directory, 5)
-    #print(doc_str)
-    eng_dir=''
-    lang_dir=''
-    extension=''
-    file_sent_doc=''
+
+    parser = argparse.ArgumentParser()
+
+    logger = logging.getLogger('context.log')  # pylint: disable=invalid-name
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--eng_dir", help="The english directory")
+    parser.add_argument("--lang_dir", help="The other language directory directory")
+    parser.add_argument("--extension", help="extension of files which we need to handle")
+    parser.add_argument("--file_sent_doc", help="file of sentence and doc alignment dictionary")
+    parser.add_argument("--eng_file_all_name", help="The english file in which english text from all files in directory is written")
+    parser.add_argument("--lang_pair_file_all_name", help="The other language file in which english text from all files in directory is written")
+
+
+    args = parser.parse_args()
+    logger.info(args)
+    eng_dir = args.eng_dir
+    lang_dir=args.lang_dir
+    extension=args.extension
+    file_sent_doc = args.file_sent_doc
+    eng_file_all_name = args.eng_file_all_name
+    lang_pair_file_all_name = args.lang_pair_file_all_name
+    stats_file = args.stats_file
+
+
     numbering_files(eng_dir, lang_dir, extension)
-    sent_doc_dic=write_all_docs(eng_directory, lang_directory, eng_file_all_name, lang_pair_file_all_name)
+    sent_doc_dic=write_all_docs(eng_dir, lang_dir, eng_file_all_name, lang_pair_file_all_name)
     print(sent_doc_dic)
     torch.save(sent_doc_dic, file_sent_doc)
 

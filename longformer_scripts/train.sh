@@ -8,7 +8,7 @@
 #SBATCH --output=train-europarl-multi-ru.log
 
 
-WORKING_DIR="data-bin/multi-europarl-ru"
+WORKING_DIR="data-bin/multi-europarl-ru" #data on which we will work on
 CP_DIR="checkpoint/europarl-multi-ru"
 PYTHON="/home/usuaris/veu/cescola/virtualenv-16.0.0/torch/bin/python"
 FAIRSEQ_DIR="/home/usuaris/veu/cescola/fairseq"
