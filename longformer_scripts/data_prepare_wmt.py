@@ -6,6 +6,7 @@ import logging
 import argparse
 import torch
 from  get_data_statistics import get_files_stats
+
 # to add  number to the beginning of the name
 # we treat files as separated docs, we have Europarl, news and TED FILES
 # Files are generally divided in English and other language
@@ -144,19 +145,26 @@ def write_all_docs(eng_dir, lang_dir, eng_file_all_name, lang_pair_file_all_name
 def write_all_docs(eng_dir, lang_dir, eng_file_all_name, lang_pair_file_all_name, extension, extension_lang, stats_dic, max_no_lines):
     #todo: get the number of files in a better way
     max_file_no=len(os.listdir(eng_dir))
-    print(max_file_no)
+    file_numbers=[]
+    for filename in os.listdir(eng_dir):
+        file_num = filename.split('_')[0]
+        file_numbers.append(file_num)
+    print('Numbers of files we have:')
+    print(file_numbers)
     sent_doc_dic={}
     sent_num=0
     eng_file_all = open(eng_file_all_name, 'w+')
     lang_pair_file_all = open(lang_pair_file_all_name, 'w+')
-    for num in range(1,(max_file_no+1)):
-        print(num)
+    print('Stats of file:')
+    print(stats_dic)
+    for num in file_numbers:
 
         file_eng_path= get_file_by_num(eng_dir, num, extension)
         print(file_eng_path)
         file_name=os.path.basename(file_eng_path)
         #check if file has reasonable no. of lines
-        if stats_dic[file_name]<max_no_lines:
+
+        if stats_dic[num]<max_no_lines:
             file_lang_path = get_file_by_num(lang_dir, num, extension_lang)
             print(file_lang_path)
             doc_num=num
@@ -182,11 +190,12 @@ def write_all_docs(eng_dir, lang_dir, eng_file_all_name, lang_pair_file_all_name
                             print(sent_num)
                             print('********doc_num********')
                             print(doc_num)
-                            sent_doc_dic[sent_num]=doc_num
+                            sent_doc_dic[sent_num]=int(doc_num)
                         count_for_file += 1
                         print('********count_per_file********')
                         print(count_for_file)
     return sent_doc_dic
+
 if __name__ == "__main__":
 
     #eng_directory = '/home/christine/news-commentary/aligned/German-English/English'
@@ -210,6 +219,8 @@ if __name__ == "__main__":
                         help="statitics for the number of lines")
     parser.add_argument("--max_no_lines",
                         help="max no. lines to consider")
+    parser.add_argument("--numbering", default=False,
+                        help="we need to number files or not")
 
     args = parser.parse_args()
     logger.info(args)
@@ -222,8 +233,10 @@ if __name__ == "__main__":
     lang_pair_file_all_name = args.lang_pair_file_all_name
     stats_file=args.stats_file
     max_no_lines=int(args.max_no_lines)
+    numbering=args.numbering
 
-    numbering_files(eng_dir, lang_dir, extension, extension_lang)
+    if(numbering):
+        numbering_files(eng_dir, lang_dir, extension, extension_lang)
     stats_dic=get_files_stats(eng_dir, stats_file)
     sent_doc_dic=write_all_docs(eng_dir, lang_dir, eng_file_all_name, lang_pair_file_all_name, extension, extension_lang,stats_dic, max_no_lines)
     print(sent_doc_dic)

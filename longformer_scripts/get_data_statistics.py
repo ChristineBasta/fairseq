@@ -7,10 +7,11 @@ def get_files_stats(dir, file_stats):
     file_stats_write = open(file_stats, 'w+')
     stats_dic={}
     for filename in sorted(os.listdir(dir)):
-        print(filename)
+        print(filename.split('_')[0])
+        name_by_num=filename.split('_')[0]
         total_lines=sum(1 for i in open(dir+'/'+filename, 'rb'))
         file_stats_write.write(filename +'  '+str(total_lines)+ '\n')
-        stats_dic[filename]=total_lines
+        stats_dic[name_by_num]=total_lines
     return stats_dic
 
 if __name__ == "__main__":
