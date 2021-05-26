@@ -41,8 +41,8 @@ def get_file_by_num(dir, num, extension):
             continue
     return ''
 
-def read_doc_by_num(eng_dir, num):
-    file_path= get_file_by_num(eng_dir, num)
+def read_doc_by_num(eng_dir, num, extension):
+    file_path= get_file_by_num(eng_dir, num, extension)
     print(file_path)
     doc_string=''
     doc_list = []
@@ -66,8 +66,8 @@ def read_doc_by_num(eng_dir, num):
 
 # the data we have do not have paragraphs separators,
 # so we just need to form the string out of the document
-def read_doc_by_num(eng_dir, num):
-    file_path= get_file_by_num(eng_dir, num)
+def read_doc_by_num(eng_dir, num, extension):
+    file_path= get_file_by_num(eng_dir, num,  extension)
     print(file_path)
     doc_string=''
     lines_paragraphs_indices=[]

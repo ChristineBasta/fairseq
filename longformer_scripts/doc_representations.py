@@ -13,15 +13,19 @@ def get_doc_representation(folder, num):
     print(output)
     return output
 
-def get_doc_representation(folder):
+def get_doc_representation(folder, extension):
     #,max no.of documents
     max_file_no = len(os.listdir(folder))
+    file_numbers = []
+    for filename in os.listdir(folder):
+        file_num = filename.split('_')[0]
+        file_numbers.append(file_num)
     docs_representations_mean_hidden_classify={}
     docs_representations_pooled_output_classify= {}
     docs_representations_mean_hidden_modeling= {}
     docs_representations_pooled_output_modeling = {}
-    for num in range(1, max_file_no+1):
-        doc_data, x, y=data_prepare_wmt.read_doc_by_num(folder, num)
+    for num in file_numbers:
+        doc_data, indices=data_prepare_wmt.read_doc_by_num(folder, num, extension)
         print(doc_data)
         #as classifier
         outputs1, mean_sequence_output1, pooled_output1 = longFormer.get_output(doc_data, classify_model=True)
@@ -69,8 +73,7 @@ def retrieve_tensors_doc(file_name):
 
 
 if __name__ == "__main__":
-    eng_directory = '/home/christine/news-commentary/aligned/German-English/English'
-    get_doc_representation(eng_directory, 2)
+
 
     parser = argparse.ArgumentParser()
 
@@ -87,4 +90,7 @@ if __name__ == "__main__":
     #save_directory = '/home/christine/news-commentary/aligned/German-English/trail_save'
     #save_tensors_docs(save_directory)
     #retrieve_tensors_doc(save_directory)
-
+    extension='en'
+    folder='/home/christine/news_micro_v/English'
+    rep_mean_hidden_classify, rep_pooled_output_classify, reps_mean_hidden_modeling, reps_pooled_output_modeling=get_doc_representation(folder, extension)
+    torch.save(rep_mean_hidden_classify, 'mean_hidden.h5')
