@@ -8,16 +8,16 @@
 #SBATCH --output=prepare_data
 
 EXT='en'
-FOLDER_PATH='' #English path
-SAVE_REP_FILE='' #Reps_path
+FOLDER_PATH='/home/usuaris/veu/christine.raouf.saad/news_micro_2/English' #English path
+SAVE_REP_FILE='/home/usuaris/veu/christine.raouf.saad/news_micro_2/train_reps.h5' #Reps_path
 KIND_REP=1
-DOC_TEXT_V_PATH=''
-DOC_TEXT_T_PATH=''
-SAVE_REP_V_FILE=''
-SAVE_REP_T_FILE=''
-SAVE_REP_ALL=''
+DOC_TEXT_V_PATH='/home/usuaris/veu/christine.raouf.saad/news_micro_2/newstest2017_doc_text.h5'
+DOC_TEXT_T_PATH='/home/usuaris/veu/christine.raouf.saad/news_micro_2/newstest2015_doc_text.h5'
+SAVE_REP_V_FILE='/home/usuaris/veu/christine.raouf.saad/news_micro_2/valid_reps.h5'
+SAVE_REP_T_FILE='/home/usuaris/veu/christine.raouf.saad/news_micro_2/test_reps.h5'
+SAVE_REP_ALL='/home/usuaris/veu/christine.raouf.saad/news_micro_2/all_lf_reps.h5'
 
 python doc_representations.py --extension $EXT --folder_represent $FOLDER_PATH \
   --save_reps $SAVE_REP_FILE --kind_reps $KIND_REP --doc_dic_valid $DOC_TEXT_V_PATH \
   --doc_dic_test $DOC_TEXT_T_PATH  --save_reps_valid $SAVE_REP_V_FILE \
-  --save_reps_tesT $SAVE_REP_T_FILE --save_reps_all $SAVE_REP_ALL
+  --save_reps_test $SAVE_REP_T_FILE --save_reps_all $SAVE_REP_ALL
