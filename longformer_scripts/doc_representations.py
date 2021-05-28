@@ -19,7 +19,7 @@ def get_doc_representation(folder, extension):
     file_numbers = []
     for filename in os.listdir(folder):
         file_num = filename.split('_')[0]
-        file_numbers.append(file_num)
+        file_numbers.append(int(file_num))
     docs_representations_mean_hidden_classify={}
     docs_representations_pooled_output_classify= {}
     docs_representations_mean_hidden_modeling= {}
@@ -48,11 +48,12 @@ def get_doc_representation_test_dev(docs_dic):
     docs_representations_pooled_output_classify= {}
     docs_representations_mean_hidden_modeling= {}
     docs_representations_pooled_output_modeling = {}
-    for num in range(1, docs_dic+1):
-        doc_data=docs_dic[no_doc]
+    for num in range(1, no_doc+1):
+        doc_num = num
+        doc_data=docs_dic[doc_num]
         print(doc_data)
         #as classifier
-        doc_num=num
+
         outputs1, mean_sequence_output1, pooled_output1 = longFormer.get_output(doc_data, classify_model=True)
         #as model
         outputs2, mean_sequence_output2, pooled_output2 = longFormer.get_output(doc_data, classify_model=False)
