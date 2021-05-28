@@ -21,7 +21,6 @@ class LongformerUsage:
         start, end =self.get_end_sentences(doc_string)
         input_ids = torch.tensor(self.tokenizer.encode(SAMPLE_TEXT, add_special_tokens=True)).unsqueeze(0)  # batch of size 1
         print(input_ids)
-
         # Attention mask values -- 0: no attention, 1: local attention, 2: global attention
         # TODO(Christine) learn what to change here according to your problem
         attention_mask = torch.ones(input_ids.shape, dtype=torch.long,
