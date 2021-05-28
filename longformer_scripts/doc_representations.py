@@ -54,7 +54,7 @@ def get_doc_representation_test_dev(docs_dic):
         print(doc_data)
         #as classifier
         print(doc_data)
-        if(len(doc_data.split())>3000):
+        if(len(doc_data.split())<3000):
             outputs1, mean_sequence_output1, pooled_output1 = longFormer.get_output(doc_data, classify_model=True)
             #as model
             outputs2, mean_sequence_output2, pooled_output2 = longFormer.get_output(doc_data, classify_model=False)
