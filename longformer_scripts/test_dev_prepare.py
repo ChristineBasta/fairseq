@@ -32,8 +32,9 @@ def prepare_test_dev(file_path_en_read,file_path_lan_read,file_path_en_write,fil
         #print(docid)
         segments = content('seg')
         #check if we should remove the \' or not
-        doc_text[doc_num]=content.text.strip().replace('\n', ' ').replace('\\\'', '\'')
-
+        #first sentence does not have am end fullstop so replacing \n with fullstop and then in case of two fullstops replace one
+        doc_text_content=content.text.strip().replace('\n', '. ').replace('\\\'', '\'')
+        doc_text[doc_num] =doc_text_content.replace('..', '.')
 
         doc_lang=soup_lan.find(docid=docid)
         segments_lang=doc_lang('seg')

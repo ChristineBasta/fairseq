@@ -41,7 +41,8 @@ def get_file_by_num(dir, num, extension):
             continue
     return ''
 
-def read_doc_by_num(eng_dir, num, extension):
+#used for certain style of data in doc that has <p> separtors and starts with many sentences
+def read_doc_styled_by_num(eng_dir, num, extension):
     file_path= get_file_by_num(eng_dir, num, extension)
     print(file_path)
     doc_string=''
@@ -71,18 +72,16 @@ def read_doc_by_num(eng_dir, num, extension):
     print(file_path)
     doc_string=''
     lines_paragraphs_indices=[]
+    count = 0
     with open(file_path) as fp:
+        #do not write first line
         line = fp.readline()
-        count = 1
-
         while line:
             #print("Line {}: {}".format(count, line.strip()))
             line = fp.readline()
-            if(count > 1):
-                doc_string=doc_string +' '+ (line.strip())
-                lines_paragraphs_indices.append(count)
+            doc_string=doc_string +' '+ (line.strip())
+            lines_paragraphs_indices.append(count)
 
-            count += 1
     return doc_string.strip(), lines_paragraphs_indices
 
 def get_text_from_file(file_path):
@@ -219,7 +218,7 @@ if __name__ == "__main__":
                         help="statitics for the number of lines")
     parser.add_argument("--max_no_lines",
                         help="max no. lines to consider")
-    parser.add_argument("--numbering", default=False,
+    parser.add_argument("--numbering", default=0,
                         help="we need to number files or not")
 
     args = parser.parse_args()
@@ -234,8 +233,10 @@ if __name__ == "__main__":
     stats_file=args.stats_file
     max_no_lines=int(args.max_no_lines)
     numbering=args.numbering
-
-    if(numbering):
+    print('numbering')
+    print(numbering)
+    if(int(numbering)==1):
+        print('entered numbering')
         numbering_files(eng_dir, lang_dir, extension, extension_lang)
     stats_dic=get_files_stats(eng_dir, stats_file)
     sent_doc_dic=write_all_docs(eng_dir, lang_dir, eng_file_all_name, lang_pair_file_all_name, extension, extension_lang,stats_dic, max_no_lines)

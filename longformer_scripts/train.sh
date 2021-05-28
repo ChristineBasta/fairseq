@@ -2,19 +2,20 @@
 
 
 #SBATCH -p veu # Partition to submit to
-#SBATCH --gres=gpu:1
-#SBATCH --mem=20G # Memory
+#SBATCH --gres=gpu:0
+#SBATCH --mem=5G # Memory
 #SBATCH --ignore-pbs
 #SBATCH --output=train-europarl-multi-ru.log
 
 
 WORKING_DIR="/home/christine/news_micro_v/model"  #data on which we will work on
-CP_DIR="checkpoint/europarl-multi-ru"
+CP_DIR="checkpoint/longformer"
 PYTHON="/home/christine/anaconda3/envs/fairseq_new_env/bin/python" #python library
 FAIRSEQ_DIR="/home/christine/PycharmProjects/fairseq" #fairseq directory
 SRC='src'
 TGT='tgt'
-MAX_TOKENS=2000
+#MAX_TOKENS=2000
+MAX_TOKENS=300
 #SAVE_UPDATES=30000
 SAVE_UPDATES=100
 mkdir -p $CP_DIR
