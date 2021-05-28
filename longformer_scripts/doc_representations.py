@@ -26,7 +26,7 @@ def get_doc_representation(folder, extension):
     docs_representations_pooled_output_modeling = {}
     for num in file_numbers:
         doc_data, indices=data_prepare_wmt.read_doc_by_num(folder, num, extension)
-        print(doc_data)
+
         #as classifier
         outputs1, mean_sequence_output1, pooled_output1 = longFormer.get_output(doc_data, classify_model=True)
         #as model
@@ -53,15 +53,16 @@ def get_doc_representation_test_dev(docs_dic):
         doc_data=docs_dic[doc_num]
         print(doc_data)
         #as classifier
+        print(doc_data)
+        if(len(doc_data.split())>3000):
+            outputs1, mean_sequence_output1, pooled_output1 = longFormer.get_output(doc_data, classify_model=True)
+            #as model
+            outputs2, mean_sequence_output2, pooled_output2 = longFormer.get_output(doc_data, classify_model=False)
+            docs_representations_mean_hidden_classify[doc_num] = mean_sequence_output1
+            docs_representations_pooled_output_classify[doc_num] = pooled_output1
 
-        outputs1, mean_sequence_output1, pooled_output1 = longFormer.get_output(doc_data, classify_model=True)
-        #as model
-        outputs2, mean_sequence_output2, pooled_output2 = longFormer.get_output(doc_data, classify_model=False)
-        docs_representations_mean_hidden_classify[doc_num] = mean_sequence_output1
-        docs_representations_pooled_output_classify[doc_num] = pooled_output1
-
-        docs_representations_mean_hidden_modeling[doc_num] = mean_sequence_output2
-        docs_representations_pooled_output_modeling[doc_num] = pooled_output2
+            docs_representations_mean_hidden_modeling[doc_num] = mean_sequence_output2
+            docs_representations_pooled_output_modeling[doc_num] = pooled_output2
 
     return docs_representations_mean_hidden_classify, docs_representations_pooled_output_classify, docs_representations_mean_hidden_modeling, docs_representations_pooled_output_modeling
 
