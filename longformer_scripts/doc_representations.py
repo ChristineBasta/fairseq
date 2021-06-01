@@ -110,6 +110,7 @@ if __name__ == "__main__":
     #file_to_save='mean_hidden.h5'
 
     #training data part
+    '''
     rep_mean_hidden_classify, rep_pooled_output_classify, reps_mean_hidden_modeling, reps_pooled_output_modeling=get_doc_representation(folder_represent, extension)
     if(kind_reps==1):
         torch.save(rep_mean_hidden_classify, save_reps)
@@ -121,7 +122,7 @@ if __name__ == "__main__":
         torch.save(reps_pooled_output_modeling, save_reps)
 
     #valid
-
+    '''
     doc_text_valid_dict=torch.load(doc_text_valid_file)
     mean_classify_v, pooled_classify_v, mean_lm_v, pooled_lm_v=get_doc_representation_test_dev(doc_text_valid_dict)
     if (kind_reps == 1):
@@ -134,6 +135,7 @@ if __name__ == "__main__":
         torch.save(pooled_lm_v, save_reps_valid)
 
     #test
+    '''
     doc_text_test_dict=torch.load(doc_text_test_file)
     mean_classify_t, pooled_classify_t, mean_lm_t, pooled_lm_t=get_doc_representation_test_dev(doc_text_test_dict)
     if (kind_reps == 1):
@@ -155,3 +157,4 @@ if __name__ == "__main__":
     dict_all['test'] = dict_test
 
     torch.save(dict_all, save_reps_all)
+    '''
