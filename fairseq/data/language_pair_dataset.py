@@ -112,19 +112,38 @@ def collate(
     else:
         ntokens = src_lengths.sum().item()
     #lf_reps
-    embedding_size=728
+    #todo: check..substituting indices are right
+    #getting the embedding size
+    embedding_size=lf_reps[1].shape(2)
+    #(batch_size, longformer_embeddings)
+    doc_reps_tensor = torch.zeros((id.size, embedding_size), dtype=torch.float64)
+    #for the ids that we will work only
+    mask_doc_available_ids=[]
     for index in id:
         #get doc_index
         doc_index = sen_doc_align[index]
-        doc_reps_tensor = torch.zeros((id.size,1, embedding_size), dtype=torch.float64)
-        doc_reps_tensor[index]=lf_reps[doc_index]
+        #there is index
+        if(doc_index):
+            #getting the representation
+            doc_reps_tensor[index] = lf_reps[doc_index]
+            mask_doc_available_ids.append(index)
+
+    # ids of available docs, ds to replace
+    mask_doc_available_ids_numpy = np.array(mask_doc_available_ids)
+    mask_doc_available_ids_tensor = torch.from_numpy(mask_doc_available_ids_numpy)
+    #todo: check (christine)
+    #start of seq without paddings, get the first token after padding
+    takens_to_replace = torch.subtract(src_lengths, src_tokens.shape[1])
+
+
+
 
     batch = {
         # todo(christine) add in net_input the log_former output..I guess we need to send it withe the correct dimensions
         "id": id,
         "nsentences": len(samples),
         "ntokens": ntokens,
-        "net_input": {"src_tokens": src_tokens, "src_lengths": src_lengths, "lf_reps": doc_reps_tensor},
+        "net_input": {"src_tokens": src_tokens, "src_lengths": src_lengths, "lf_reps": doc_reps_tensor, "available_ids":mask_doc_available_ids_tensor, "tokens_ids":takens_to_replace},
         "target": target,
 
     }

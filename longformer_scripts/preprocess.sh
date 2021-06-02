@@ -9,17 +9,17 @@
 echo 'Cloning Subword NMT repository (for BPE pre-processing)...'
 git clone https://github.com/rsennrich/subword-nmt.git
 
-WORKING_DIR="/home/christine/news_micro_v/data"   #data
+WORKING_DIR="/home/christine/news_micro_2/data"   #data
 SRC="en"
 TGT="de"
 
 TRN_PREF="train.tok.tc"
 VAL_PREF="valid.tok.tc"
-TES_PREF="test.tok.tc"
+TES_PREF="test2015.tok.tc"
 PYTHON="/home/christine/anaconda3/envs/fairseq_new_env/bin/python" #python library
 FAIRSEQ_DIR="/home/christine/PycharmProjects/fairseq" #fairseq directory
 
-DEST_DIR="/home/christine/news_micro_v/model"  #data final library
+DEST_DIR="/home/christine/news_micro_2/model"  #data final library
 
 mkdir $DEST_DIR
 

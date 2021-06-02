@@ -14,10 +14,10 @@ bpe_operations=32000
 mosesdecoder='../mosesdecoder'
 
 # path to subword segmentation scripts: https://github.com/rsennrich/subword-nmt
-data_folder='/home/christine/news_micro_v'
-model_folder='/home/christine/news_micro_v/model'
+data_folder='/home/christine/news_micro_2/data'
+model_folder='/home/christine/news_micro_2/model'
 # tokenize
-for prefix in train valid test_
+for prefix in train valid test2015
 do
     cat $data_folder/$prefix.$SRC \
         | $mosesdecoder/scripts/tokenizer/normalize-punctuation.perl -l $SRC \
@@ -36,14 +36,14 @@ $mosesdecoder/scripts/recaser/train-truecaser.perl -corpus $data_folder/train.to
 $mosesdecoder/scripts/recaser/train-truecaser.perl -corpus $data_folder/train.tok.$TRG -model $model_folder/tc.$TRG
 
 # apply truecaser (cleaned training corpus)
-for prefix in train valid test_
+for prefix in train valid test2015
 do
     $mosesdecoder/scripts/recaser/truecase.perl -model $model_folder/tc.$SRC < $data_folder/$prefix.tok.$SRC > $data_folder/$prefix.tok.tc.$SRC
     #test -f data/$prefix.tok.$TRG || continue
     $mosesdecoder/scripts/recaser/truecase.perl -model $model_folder/tc.$TRG < $data_folder/$prefix.tok.$TRG > $data_folder/$prefix.tok.tc.$TRG
 done
 #adding <DOC> token
-for prefix in train valid test_
+for prefix in train valid test2015
 do
   sed -i 's/^/<DOC> /' $data_folder/$prefix.tok.tc.$SRC
 done

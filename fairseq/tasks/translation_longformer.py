@@ -170,10 +170,12 @@ def load_langpair_dataset(
         num_buckets=num_buckets,
         shuffle=shuffle,
         pad_to_multiple=pad_to_multiple,
+        # todo check!
         lf_reps=lf_reps,
         sen_doc_align=sen_doc_align,
     )
 # added the loading of representations
+# todo check!
 def load_longformer_representations(representations_path):
     longformer_representations = torch.load(representations_path)
     return longformer_representations
@@ -236,6 +238,8 @@ class TranslationConfig(FairseqDataclass):
         },
     )
     train_subset: str = II("dataset.train_subset")
+    valid_subset: str = II("dataset.valid_subset")
+    test_subset: str = II("dataset.test_subset")
     dataset_impl: Optional[ChoiceEnum(get_available_dataset_impl())] = II(
         "dataset.dataset_impl"
     )
@@ -275,7 +279,7 @@ class TranslationConfig(FairseqDataclass):
     eval_bleu_print_samples: bool = field(
         default=False, metadata={"help": "print sample generations during validation"}
     )
-
+    # todo check!
     longformer_path: Optional[str] = field(
         default=None,
         metadata={
@@ -292,7 +296,7 @@ class TranslationConfig(FairseqDataclass):
     )
 
 
-@register_task("translation", dataclass=TranslationConfig)
+@register_task("translation_longformer", dataclass=TranslationConfig)
 class TranslationTask(FairseqTask):
     """
     Translate from one (source) language to another (target) language.
@@ -314,6 +318,7 @@ class TranslationTask(FairseqTask):
         self.src_dict = src_dict
         self.tgt_dict = tgt_dict
         #longformer representations
+        # todo check!
         self.lf_reps = lf_reps
         self.sen_doc_align = sen_doc_align
 
@@ -349,6 +354,7 @@ class TranslationTask(FairseqTask):
         logger.info("[{}] dictionary: {} types".format(cfg.source_lang, len(src_dict)))
         logger.info("[{}] dictionary: {} types".format(cfg.target_lang, len(tgt_dict)))
         #load here the longformer reps
+        # todo check!
         lf_reps = load_longformer_representations(cfg.longformer_path)
         sen_doc_align = load_sen_doc_alignment(cfg.sen_doc_align_path)
         return cls(cfg, src_dict, tgt_dict, lf_reps, sen_doc_align)
@@ -368,6 +374,16 @@ class TranslationTask(FairseqTask):
 
         # infer langcode
         src, tgt = self.cfg.source_lang, self.cfg.target_lang
+        #todo (christine..check on kind of split)
+        if split == self.cfg.train_subset:
+            lf_reps=self.lf_reps['train']
+            sen_doc_align=self.sen_doc_align['train']
+        elif split == self.cfg.valid_subset:
+            lf_reps = self.lf_reps['valid']
+            sen_doc_align = self.sen_doc_align['valid']
+        elif split == self.cfg.test_subset:
+            lf_reps = self.lf_reps['test']
+            sen_doc_align = self.sen_doc_align['test']
 
         self.datasets[split] = load_langpair_dataset(
             data_path,
@@ -388,8 +404,9 @@ class TranslationTask(FairseqTask):
             num_buckets=self.cfg.num_batch_buckets,
             shuffle=(split != "test"),
             pad_to_multiple=self.cfg.required_seq_len_multiple,
-            lf_reps=self.lf_reps,
-            sen_doc_align=self.sen_doc_align
+            # todo (christine..check right lf_reps and sen_doc_align)
+            lf_reps=lf_reps,
+            sen_doc_align=sen_doc_align
         )
 
     def build_dataset_for_inference(self, src_tokens, src_lengths, constraints=None):
@@ -399,8 +416,9 @@ class TranslationTask(FairseqTask):
             self.source_dictionary,
             tgt_dict=self.target_dictionary,
             constraints=constraints,
-            lf_reps=self.lf_reps, # todo(christine) check if it is right to do it here
-            sen_doc_align=self.sen_doc_align
+            # todo(christine) check!
+            lf_reps=self.lf_reps['test'],
+            sen_doc_align=self.sen_doc_align['test']
         )
 
     def build_model(self, cfg):

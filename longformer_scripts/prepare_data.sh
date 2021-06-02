@@ -13,8 +13,8 @@ EX='en'
 EX_LANG='de'
 #dictionary file
 TRAIN_SENT_DOC_ALIGN='/home/christine/news_micro_2/train_sent_doc_align.h5'
-ENG_ALL='/home/christine/news_micro_2/all.en'
-LANG_ALL='/home/christine/news_micro_2/all.de'
+ENG_ALL='/home/christine/news_micro_2/data/train.en'
+LANG_ALL='/home/christine/news_micro_2/data/train.de'
 STATS_FILE='/home/christine/news_micro_2/stats.en'
 MAX_LINES=250
 numbering=0
@@ -31,8 +31,8 @@ python3 data_prepare_wmt.py --eng_dir $ENG_DIR  --lang_dir $LANG_DIR --extension
 #valid data
 SRC_FILE='/home/christine/news_micro_v/test/newstest2017-ende-src.en.sgm'
 REF_FILE='/home/christine/news_micro_v/test/newstest2017-ende-ref.de.sgm'
-SRC_WRITE_FILE='/home/christine/news_micro_2/newstest2017-ende-src.en'
-REF_WRITE_FILE='/home/christine/news_micro_2/newstest2017-ende-ref.de'
+SRC_WRITE_FILE='/home/christine/news_micro_2/data/valid.en'
+REF_WRITE_FILE='/home/christine/news_micro_2/data/valid.de'
 DOC_TEXT_FILE='/home/christine/news_micro_2/newstest2017_doc_text.h5'
 VALID_SENT_DOC_ALIGN='/home/christine/news_micro_2/newstest2017_sen_doc_alignment.h5'
 
@@ -43,8 +43,8 @@ python3 test_dev_prepare.py --file_read_src $SRC_FILE --file_read_ref $REF_FILE 
 #test data
 SRC_FILE='/home/christine/news_micro_v/dev/newstest2015-ende-src.en.sgm'
 REF_FILE='/home/christine/news_micro_v/dev/newstest2015-ende-ref.de.sgm'
-SRC_WRITE_FILE='/home/christine/news_micro_2/newstest2015-ende-src.en'
-REF_WRITE_FILE='/home/christine/news_micro_2/newstest2015-ende-ref.de'
+SRC_WRITE_FILE='/home/christine/news_micro_2/data/test2015.en'
+REF_WRITE_FILE='/home/christine/news_micro_2/data/test2015.de'
 DOC_TEXT_FILE='/home/christine/news_micro_2/newstest2015_doc_text.h5'
 TEST_SENT_DOC_ALIGN='/home/christine/news_micro_2/newstest2015_sen_doc_alignment.h5'
 

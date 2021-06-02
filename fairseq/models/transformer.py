@@ -432,6 +432,12 @@ class TransformerEncoder(FairseqEncoder):
 
         x = embed = self.embed_scale * token_embedding
         # TODO(Christine) lf_reps in the first <doc> token!
+        #linear?
+        # from long_former embedding to word embeddings
+        lin = nn.Linear(lf_reps.shape(2), x.shape(2))
+        lf_reps = lin(lf_reps)
+        #x[mask_ids, 0,:] for certain ids to be replaced
+        #x[mask_ids,pad,:] for certain ids with the token after left pad
         x[:, 0] = lf_reps
         if self.embed_positions is not None:
             x = embed + self.embed_positions(src_tokens)
