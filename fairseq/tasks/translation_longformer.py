@@ -280,14 +280,14 @@ class TranslationConfig(FairseqDataclass):
         default=False, metadata={"help": "print sample generations during validation"}
     )
     # todo check!
-    longformer_path: Optional[str] = field(
+    lf_path: Optional[str] = field(
         default=None,
         metadata={
             "help": "long former representations path",
             "argparse_alias": "-lf_path",
         },
     )
-    sen_doc_align_path: Optional[str] = field(
+    sen_doc: Optional[str] = field(
         default=None,
         metadata={
             "help": "sentence document alignment path to get which sentence belongs to which document ",
@@ -297,7 +297,7 @@ class TranslationConfig(FairseqDataclass):
 
 
 @register_task("translation_longformer", dataclass=TranslationConfig)
-class TranslationTask(FairseqTask):
+class TranslationLongformerTask(FairseqTask):
     """
     Translate from one (source) language to another (target) language.
 
@@ -355,8 +355,8 @@ class TranslationTask(FairseqTask):
         logger.info("[{}] dictionary: {} types".format(cfg.target_lang, len(tgt_dict)))
         #load here the longformer reps
         # todo check!
-        lf_reps = load_longformer_representations(cfg.longformer_path)
-        sen_doc_align = load_sen_doc_alignment(cfg.sen_doc_align_path)
+        lf_reps = load_longformer_representations(cfg.lf_path)
+        sen_doc_align = load_sen_doc_alignment(cfg.sen_doc)
         return cls(cfg, src_dict, tgt_dict, lf_reps, sen_doc_align)
 
     def load_dataset(self, split, epoch=1, combine=False, **kwargs):
