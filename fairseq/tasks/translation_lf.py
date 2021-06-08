@@ -185,7 +185,7 @@ def load_sen_doc_alignment(sen_doc_path):
     return sen_doc_align
 
 @dataclass
-class TranslationConfig(FairseqDataclass):
+class TranslationlfConfig(FairseqDataclass):
     data: Optional[str] = field(
         default=None,
         metadata={
@@ -280,7 +280,7 @@ class TranslationConfig(FairseqDataclass):
         default=False, metadata={"help": "print sample generations during validation"}
     )
     # todo check!
-    lf_path: Optional[str] = field(
+    lf_path: str = field(
         default=None,
         metadata={
             "help": "long former representations path",
@@ -296,8 +296,8 @@ class TranslationConfig(FairseqDataclass):
     )
 
 
-@register_task("translation_longformer", dataclass=TranslationConfig)
-class TranslationLongformerTask(FairseqTask):
+@register_task("translation_lf", dataclass=TranslationlfConfig)
+class TranslationLfTask(FairseqTask):
     """
     Translate from one (source) language to another (target) language.
 
@@ -311,9 +311,9 @@ class TranslationLongformerTask(FairseqTask):
         :mod:`fairseq-generate` and :mod:`fairseq-interactive`.
     """
 
-    cfg: TranslationConfig
+    cfg: TranslationlfConfig
 
-    def __init__(self, cfg: TranslationConfig, src_dict, tgt_dict, lf_reps, sen_doc_align):
+    def __init__(self, cfg: TranslationlfConfig, src_dict, tgt_dict, lf_reps, sen_doc_align):
         super().__init__(cfg)
         self.src_dict = src_dict
         self.tgt_dict = tgt_dict
@@ -324,7 +324,7 @@ class TranslationLongformerTask(FairseqTask):
 
 
     @classmethod
-    def setup_task(cls, cfg: TranslationConfig, **kwargs):
+    def setup_task(cls, cfg: TranslationlfConfig, **kwargs):
         """Setup the task (e.g., load dictionaries).
 
         Args:
