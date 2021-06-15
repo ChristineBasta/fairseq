@@ -27,7 +27,8 @@ def collate(
 ):
     if len(samples) == 0:
         return {}
-
+    print('Length of samples:')
+    print(len(samples))
     def merge(key, left_pad, move_eos_to_beginning=False, pad_to_length=None):
         return data_utils.collate_tokens(
             [s[key] for s in samples],
@@ -112,38 +113,42 @@ def collate(
     else:
         ntokens = src_lengths.sum().item()
     #lf_reps
+
     #todo: check..substituting indices are right
     #getting the embedding size
-    embedding_size=lf_reps[1].shape(2)
+    embedding_size=lf_reps[1].shape[1]
     #(batch_size, longformer_embeddings)
-    doc_reps_tensor = torch.zeros((id.size, embedding_size), dtype=torch.float64)
+    doc_reps_tensor = torch.zeros((id.shape[0], embedding_size), dtype=torch.float64)
     #for the ids that we will work only
     mask_doc_available_ids=[]
+    #todo:check this
+    sent_batch_index=0
     for index in id:
-        #get doc_index
-        doc_index = sen_doc_align[index]
-        #there is index
+        # get doc_index from sen_doc_align dictionary
+        doc_index = sen_doc_align[index.item()+1]
         if(doc_index):
-            #getting the representation
-            doc_reps_tensor[index] = lf_reps[doc_index]
-            mask_doc_available_ids.append(index)
+            # checking if the doc_index is in the dictionary
+            if doc_index in lf_reps:
+                doc_reps_tensor[sent_batch_index] = lf_reps[doc_index]
+                mask_doc_available_ids.append(sent_batch_index)
+        sent_batch_index+=1
 
     # ids of available docs, ds to replace
     mask_doc_available_ids_numpy = np.array(mask_doc_available_ids)
     mask_doc_available_ids_tensor = torch.from_numpy(mask_doc_available_ids_numpy)
     #todo: check (christine)
     #start of seq without paddings, get the first token after padding
-    takens_to_replace = torch.subtract(src_lengths, src_tokens.shape[1])
 
+    tokens_to_replace = src_tokens.shape[1]-src_lengths
 
-
-
+    doc_reps_tensor=doc_reps_tensor.detach()
+    doc_reps_tensor=doc_reps_tensor.float()
     batch = {
         # todo(christine) add in net_input the log_former output..I guess we need to send it withe the correct dimensions
         "id": id,
         "nsentences": len(samples),
         "ntokens": ntokens,
-        "net_input": {"src_tokens": src_tokens, "src_lengths": src_lengths, "lf_reps": doc_reps_tensor, "available_ids":mask_doc_available_ids_tensor, "tokens_ids":takens_to_replace},
+        "net_input": {"src_tokens": src_tokens, "src_lengths": src_lengths, "lf_reps":doc_reps_tensor,  "doc_exist_ids":mask_doc_available_ids_tensor, "after_pad_tokens_ids":tokens_to_replace},
         "target": target,
 
     }

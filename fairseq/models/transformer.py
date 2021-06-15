@@ -197,6 +197,9 @@ class TransformerModel(FairseqEncoderDecoderModel):
                             help='block size of quantization noise at training time')
         parser.add_argument('--quant-noise-scalar', type=float, metavar='D', default=0,
                             help='scalar quantization noise and scalar quantization at training time')
+
+        parser.add_argument('--lf-rep-dim', type=float, metavar='D', default=768,
+                            help='dimension of longformer representations')
         # args for Fully Sharded Data Parallel (FSDP) training
         parser.add_argument(
             '--min-params-to-wrap', type=int, metavar='D', default=DEFAULT_MIN_PARAMS_TO_WRAP,
@@ -210,6 +213,10 @@ class TransformerModel(FairseqEncoderDecoderModel):
             )
         )
         # fmt: on
+
+        #todo: the size of the longformer
+        #the size of the embedding
+        #put it in tiny transformer or send it in train.sh
 
     @classmethod
     def build_model(cls, args, task):
@@ -300,6 +307,9 @@ class TransformerModel(FairseqEncoderDecoderModel):
         src_tokens,
         src_lengths,
         prev_output_tokens,
+        lf_reps: Optional = None,
+        doc_exist_ids: Optional = None,
+        after_pad_tokens_ids: Optional = None,
         return_all_hiddens: bool = True,
         features_only: bool = False,
         alignment_layer: Optional[int] = None,
@@ -312,7 +322,8 @@ class TransformerModel(FairseqEncoderDecoderModel):
         which are not supported by TorchScript.
         """
         encoder_out = self.encoder(
-            src_tokens, src_lengths=src_lengths, return_all_hiddens=return_all_hiddens
+            src_tokens, src_lengths=src_lengths, return_all_hiddens=return_all_hiddens, lf_reps=lf_reps,
+            doc_exist_ids= doc_exist_ids, after_pad_tokens_ids=after_pad_tokens_ids
         )
         decoder_out = self.decoder(
             prev_output_tokens,
@@ -407,6 +418,12 @@ class TransformerEncoder(FairseqEncoder):
         else:
             self.layer_norm = None
 
+        #todo(christine)
+        self.lf_rep_dim=args.lf_rep_dim
+        print('lf_rep_dim in transformer class:')
+        print(self.lf_rep_dim)
+        self.lin_lf = nn.Linear(self.lf_rep_dim, embed_dim)
+
     def build_encoder_layer(self, args):
         layer = TransformerEncoderLayer(args)
         checkpoint = getattr(args, "checkpoint_activations", False)
@@ -424,6 +441,8 @@ class TransformerEncoder(FairseqEncoder):
 
     def forward_embedding(
         self, src_tokens, token_embedding: Optional[torch.Tensor] = None, lf_reps: Optional = None,
+        doc_exist_ids: Optional = None,
+        after_pad_tokens_ids: Optional = None,
     ):
 
         # embed tokens and positions
@@ -434,11 +453,22 @@ class TransformerEncoder(FairseqEncoder):
         # TODO(Christine) lf_reps in the first <doc> token!
         #linear?
         # from long_former embedding to word embeddings
-        lin = nn.Linear(lf_reps.shape(2), x.shape(2))
-        lf_reps = lin(lf_reps)
+        print('longformer reps:')
+        print(lf_reps)
+        print('x:')
+        print( x[doc_exist_ids,after_pad_tokens_ids,:])
+        print('after_pad_ids:')
+        print(after_pad_tokens_ids)
+        lf_reps_after_trans = self.lin_lf(lf_reps)
         #x[mask_ids, 0,:] for certain ids to be replaced
         #x[mask_ids,pad,:] for certain ids with the token after left pad
-        x[:, 0] = lf_reps
+        x[doc_exist_ids,after_pad_tokens_ids,:] = lf_reps_after_trans
+        print('after change:')
+        print( x[doc_exist_ids,after_pad_tokens_ids,:])
+
+        #x[:, 0] = lf_reps_after_trans
+
+
         if self.embed_positions is not None:
             x = embed + self.embed_positions(src_tokens)
         if self.layernorm_embedding is not None:
@@ -453,6 +483,8 @@ class TransformerEncoder(FairseqEncoder):
         src_tokens,
         src_lengths: Optional[torch.Tensor] = None,
         lf_reps:Optional= None,
+        doc_exist_ids: Optional = None,
+        after_pad_tokens_ids: Optional = None,
         return_all_hiddens: bool = False,
         token_embeddings: Optional[torch.Tensor] = None,
     ):
@@ -482,6 +514,8 @@ class TransformerEncoder(FairseqEncoder):
         return self.forward_scriptable(src_tokens,
                                        src_lengths,
                                        lf_reps,
+                                       doc_exist_ids,
+                                       after_pad_tokens_ids,
                                        return_all_hiddens,
                                        token_embeddings)
 
@@ -494,6 +528,8 @@ class TransformerEncoder(FairseqEncoder):
         src_tokens,
         src_lengths: Optional[torch.Tensor] = None,
         lf_reps: Optional= None,
+        doc_exist_ids: Optional= None,
+        after_pad_tokens_ids: Optional= None,
         return_all_hiddens: bool = False,
         token_embeddings: Optional[torch.Tensor] = None,
     ):
@@ -524,7 +560,7 @@ class TransformerEncoder(FairseqEncoder):
         encoder_padding_mask = src_tokens.eq(self.padding_idx)
         has_pads = (src_tokens.device.type == "xla" or encoder_padding_mask.any())
 
-        x, encoder_embedding = self.forward_embedding(src_tokens, token_embeddings, lf_reps)
+        x, encoder_embedding = self.forward_embedding(src_tokens, token_embeddings, lf_reps, doc_exist_ids, after_pad_tokens_ids)
 
         # account for padding while computing the representation
         if has_pads:
@@ -1084,7 +1120,9 @@ def tiny_architecture(args):
     args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 2)
     args.decoder_layers = getattr(args, "decoder_layers", 2)
     args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 2)
-    return base_architecture(args)
+    #todo(christine) define the lf_rep_dim
+    args.lf_rep_dim=getattr(args, "lf-rep-dim", 768)
+    base_architecture(args)
 
 
 @register_model_architecture("transformer", "transformer")

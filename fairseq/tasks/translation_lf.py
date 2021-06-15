@@ -238,8 +238,8 @@ class TranslationlfConfig(FairseqDataclass):
         },
     )
     train_subset: str = II("dataset.train_subset")
-    valid_subset: str = II("dataset.valid_subset")
-    test_subset: str = II("dataset.test_subset")
+    #valid_subset: str = II("dataset.valid_subset")
+    #test_subset: str = II("dataset.test_subset")
     dataset_impl: Optional[ChoiceEnum(get_available_dataset_impl())] = II(
         "dataset.dataset_impl"
     )
@@ -280,18 +280,18 @@ class TranslationlfConfig(FairseqDataclass):
         default=False, metadata={"help": "print sample generations during validation"}
     )
     # todo check!
-    lf_path: str = field(
+    lf_path:  Optional[str] = field(
         default=None,
         metadata={
             "help": "long former representations path",
-            "argparse_alias": "-lf_path",
+            "argparse_alias": "-lf-path",
         },
     )
     sen_doc: Optional[str] = field(
         default=None,
         metadata={
             "help": "sentence document alignment path to get which sentence belongs to which document ",
-            "argparse_alias": "-sen_doc",
+            "argparse_alias": "-sen-doc",
         },
     )
 
@@ -375,15 +375,17 @@ class TranslationLfTask(FairseqTask):
         # infer langcode
         src, tgt = self.cfg.source_lang, self.cfg.target_lang
         #todo (christine..check on kind of split)
-        if split == self.cfg.train_subset:
-            lf_reps=self.lf_reps['train']
-            sen_doc_align=self.sen_doc_align['train']
+        #if split == self.cfg.train_subset:
+        lf_reps=self.lf_reps[split]
+        sen_doc_align=self.sen_doc_align[split]
+        '''
         elif split == self.cfg.valid_subset:
             lf_reps = self.lf_reps['valid']
             sen_doc_align = self.sen_doc_align['valid']
         elif split == self.cfg.test_subset:
             lf_reps = self.lf_reps['test']
             sen_doc_align = self.sen_doc_align['test']
+        '''
 
         self.datasets[split] = load_langpair_dataset(
             data_path,
@@ -408,6 +410,7 @@ class TranslationLfTask(FairseqTask):
             lf_reps=lf_reps,
             sen_doc_align=sen_doc_align
         )
+
 
     def build_dataset_for_inference(self, src_tokens, src_lengths, constraints=None):
         return LanguagePairDataset(
