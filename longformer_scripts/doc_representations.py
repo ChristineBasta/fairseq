@@ -63,7 +63,7 @@ def get_doc_representation_test_dev(docs_dic, kind_reps):
                 representation = get_representations_seq_classify(doc_data)
             elif kind_reps == 6:
                 representation = get_representations_masked_LM(doc_data)
-            docs_representations[doc_num] = representation
+            #docs_representations[doc_num] = representation
             del representation
             torch.cuda.empty_cache()
 
