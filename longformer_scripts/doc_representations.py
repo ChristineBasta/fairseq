@@ -18,7 +18,7 @@ def get_doc_representation(folder, num):
 
 def get_doc_representation(folder, extension, kind_reps, file_h5_name):
     # ,max no.of documents
-    saving_file = h5py.File(file_h5_name, 'a')
+    saving_file = h5py.File(file_h5_name, 'a', HDF5_USE_FILE_LOCKING='FALSE')
     file_numbers = []
     for filename in os.listdir(folder):
         file_num = filename.split('_')[0]
@@ -53,7 +53,7 @@ def get_doc_representation(folder, extension, kind_reps, file_h5_name):
 def get_doc_representation_test_dev(docs_dic, kind_reps, file_h5_name):
     # ,max no.of documents
     # todo_check
-    saving_file = h5py.File(file_h5_name, 'a')
+    saving_file = h5py.File(file_h5_name, 'a', HDF5_USE_FILE_LOCKING='FALSE')
     no_doc = len(docs_dic)
     doc_num = 0
 
