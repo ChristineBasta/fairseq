@@ -13,12 +13,12 @@ def get_doc_representation(folder, num):
     doc_data, x, y = data_prepare_wmt.read_doc_by_num(folder, num)
     print(doc_data)
     output = longFormer.get_output(doc_data)
-    print(output)
     return output
 
 
-def get_doc_representation(folder, extension, kind_reps):
+def get_doc_representation(folder, extension, kind_reps, file_h5_name):
     # ,max no.of documents
+    saving_file = h5py.File(file_h5_name, 'a')
     file_numbers = []
     for filename in os.listdir(folder):
         file_num = filename.split('_')[0]
@@ -26,48 +26,64 @@ def get_doc_representation(folder, extension, kind_reps):
     docs_representations = {}
 
     for num in file_numbers:
-        doc_data, indices = data_prepare_wmt.read_doc_by_num(folder, num, extension)
-        if (kind_reps == 1 or kind_reps == 2):
-            representation = get_representations_classify(doc_data, kind_reps)
-        elif (kind_reps == 3 or kind_reps == 4):
-            representation = get_representations_model(doc_data, kind_reps)
-        elif kind_reps == 5:
-            representation = get_representations_seq_classify(doc_data)
-        elif kind_reps == 6:
-            representation = get_representations_masked_LM(doc_data)
-        #docs_representations[num] = representation
-        del representation
-        torch.cuda.empty_cache()
-    return docs_representations
+        try:
+            print('File num '+str(num)+' is processed now to be saved')
+            doc_data, indices = data_prepare_wmt.read_doc_by_num(folder, num, extension)
+            if (len(doc_data.split()) < 3000):
+                print('File num ' + str(num) + ' has less than 3000 tokens.')
+                if (kind_reps == 1 or kind_reps == 2):
+                    representation = get_representations_classify(doc_data, kind_reps)
+                elif (kind_reps == 3 or kind_reps == 4):
+                    representation = get_representations_model(doc_data, kind_reps)
+                elif kind_reps == 5:
+                    representation = get_representations_seq_classify(doc_data)
+                elif kind_reps == 6:
+                    representation = get_representations_masked_LM(doc_data)
+                saving_file.create_dataset(str(num), data=representation)
+                del representation
+                torch.cuda.empty_cache()
+        except ValueError:
+            print('File num ' + str(num) + ' is having problem in train!!')
+            print(ValueError)
+    saving_file.close()
 
 
-def get_doc_representation_test_dev(docs_dic, kind_reps):
+
+
+def get_doc_representation_test_dev(docs_dic, kind_reps, file_h5_name):
     # ,max no.of documents
     # todo_check
+    saving_file = h5py.File(file_h5_name, 'a')
     no_doc = len(docs_dic)
     doc_num = 0
-    docs_representations = {}
+
 
     for num in range(1, no_doc + 1):
-        doc_num = num
-        doc_data = docs_dic[doc_num]
-        print(doc_data)
-        # as classifier
-        print(doc_data)
-        if (len(doc_data.split()) < 3000):
-            if (kind_reps == 1 or kind_reps == 2):
-                representation = get_representations_classify(doc_data, kind_reps)
-            elif (kind_reps == 3 or kind_reps == 4):
-                representation = get_representations_model(doc_data, kind_reps)
-            elif kind_reps == 5:
-                representation = get_representations_seq_classify(doc_data)
-            elif kind_reps == 6:
-                representation = get_representations_masked_LM(doc_data)
-            #docs_representations[doc_num] = representation
-            del representation
-            torch.cuda.empty_cache()
+        try:
+            print('File num ' + str(num) + ' is processed now to be saved')
+            doc_num = num
+            doc_data = docs_dic[doc_num]
+            print(doc_data)
+            # as classifier
+            print(doc_data)
+            if (len(doc_data.split()) < 3000):
+                print('File num ' + str(num) + ' has less than 3000 tokens.')
+                if (kind_reps == 1 or kind_reps == 2):
+                    representation = get_representations_classify(doc_data, kind_reps)
+                elif (kind_reps == 3 or kind_reps == 4):
+                    representation = get_representations_model(doc_data, kind_reps)
+                elif kind_reps == 5:
+                    representation = get_representations_seq_classify(doc_data)
+                elif kind_reps == 6:
+                    representation = get_representations_masked_LM(doc_data)
+                saving_file.create_dataset(str(doc_num), data=representation)
+                del representation
+                torch.cuda.empty_cache()
+        except ValueError:
+            print('File num ' + str(num) + ' is having problem in test or dev!!')
+            print(ValueError)
+    saving_file.close()
 
-    return docs_representations
 
 
 def get_representations_classify(doc_data, kind_reps):
@@ -127,19 +143,6 @@ if __name__ == "__main__":
     which_file_reps=int(args.which_file_reps)
 
 
-    # training data part
-    if(which_file_reps==1):
-        representations_dic=get_doc_representation(folder_represent, extension, kind_reps)
-        file_name_start='train'
-    elif (which_file_reps == 2):
-        doc_text_valid_dict = torch.load(doc_text_valid_file)
-        representations_dic = get_doc_representation_test_dev(doc_text_valid_dict, kind_reps)
-        file_name_start = 'valid'
-    elif (which_file_reps == 3):
-        doc_text_test_dict = torch.load(doc_text_test_file)
-        representations_dic = get_doc_representation_test_dev(doc_text_test_dict, kind_reps)
-        file_name_start = 'test'
-
     if (kind_reps == 1):
         file_name_end='_mean_classify.h5'
     elif (kind_reps == 2):
@@ -153,10 +156,27 @@ if __name__ == "__main__":
     elif (kind_reps == 6):
         file_name_end = '_lm_masked.h5'
 
+    # training data part
+    if(which_file_reps==1):
+        file_name_start = 'train'
+        get_doc_representation(folder_represent, extension, kind_reps, file_name_start+file_name_end)
+
+    elif (which_file_reps == 2):
+        doc_text_valid_dict = torch.load(doc_text_valid_file)
+        file_name_start = 'valid'
+        get_doc_representation_test_dev(doc_text_valid_dict, kind_reps, file_name_start+file_name_end)
+
+    elif (which_file_reps == 3):
+        doc_text_test_dict = torch.load(doc_text_test_file)
+        file_name_start = 'test'
+        get_doc_representation_test_dev(doc_text_test_dict, kind_reps, file_name_start+file_name_end)
+
+
+
     #open and write a file if exits, else create
     #processed = h5py.File(file_name_start+file_name_end, 'a')
     #processed.create_dataset(str(num), data=representation, dtype='float32')
-    torch.save(file_name_start+file_name_end, representations_dic)
+    #torch.save(file_name_start+file_name_end, representations_dic)
 
     # make a dictionary for train, test, valid
     '''

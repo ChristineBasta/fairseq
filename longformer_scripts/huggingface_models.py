@@ -13,14 +13,10 @@ class LongformerUsage:
         # the documents change
         #SAMPLE_TEXT = ' '.join(['Hello world! '] * 1000)  # long input document
         SAMPLE_TEXT = doc_string
-        print('TOKENIZED for doc by self.tokenizer.tokenize:')
-        print(self.tokenizer.tokenize(SAMPLE_TEXT))
-        print('encodings for doc by self.tokenizer.encode:')
-        print(self.tokenizer.encode(SAMPLE_TEXT))
         # getting start ids of sentences so we set the attention to them
         start, end =self.get_end_sentences(doc_string)
         input_ids = torch.tensor(self.tokenizer.encode(SAMPLE_TEXT, add_special_tokens=True)).unsqueeze(0)  # batch of size 1
-        print(input_ids)
+
         # Attention mask values -- 0: no attention, 1: local attention, 2: global attention
         # TODO(Christine) learn what to change here according to your problem
         attention_mask = torch.ones(input_ids.shape, dtype=torch.long,
@@ -45,13 +41,7 @@ class LongformerUsage:
         logging.info(mean_sequence_output.shape)
         pooled_output = outputs.pooler_output
 
-        print('hidden_states:')
-        print(len(outputs.hidden_states))
-        print('golbal_attentions:')
-        print(len(outputs.global_attentions))
-        print(outputs.global_attentions[0].shape) #batch, num_heads, sequence_length, global_attention_tokens
 
-        print(sequence_output)
         return outputs, mean_sequence_output, pooled_output
 
     # LongformerForMaskedLM
@@ -82,7 +72,7 @@ class LongformerUsage:
 
     def get_end_sentences(self, sentence):
         ids=self.tokenizer.encode(sentence)
-        print(ids)
+
         index=0
         list_indices_end=[]
         list_indices_end.append(0)
