@@ -11,7 +11,7 @@ longFormer = LongformerUsage()
 
 def get_doc_representation(folder, num):
     doc_data, x, y = data_prepare_wmt.read_doc_by_num(folder, num)
-    print(doc_data)
+
     output = longFormer.get_output(doc_data)
     return output
 
@@ -29,8 +29,8 @@ def get_doc_representation(folder, extension, kind_reps, file_h5_name):
         try:
             print('File num '+str(num)+' is processed now to be saved')
             doc_data, indices = data_prepare_wmt.read_doc_by_num(folder, num, extension)
-            if (len(doc_data.split()) < 3000):
-                print('File num ' + str(num) + ' has less than 3000 tokens.')
+            if (len(doc_data.split()) < 3500):
+                print('File num ' + str(num) + ' has less than 3500 tokens.')
                 if (kind_reps == 1 or kind_reps == 2):
                     representation = get_representations_classify(doc_data, kind_reps)
                 elif (kind_reps == 3 or kind_reps == 4):
@@ -45,6 +45,8 @@ def get_doc_representation(folder, extension, kind_reps, file_h5_name):
                 del representation
                 del representation_numpy
                 torch.cuda.empty_cache()
+            else:
+                print('File num ' + str(num) + ' has more than 3500 tokens and not saved.')
         except ValueError:
             print('File num ' + str(num) + ' is having problem in train!!')
             print(ValueError)
@@ -66,11 +68,9 @@ def get_doc_representation_test_dev(docs_dic, kind_reps, file_h5_name):
             print('File num ' + str(num) + ' is processed now to be saved')
             doc_num = num
             doc_data = docs_dic[doc_num]
-            print(doc_data)
-            # as classifier
-            print(doc_data)
-            if (len(doc_data.split()) < 3000):
-                print('File num ' + str(num) + ' has less than 3000 tokens.')
+
+            if (len(doc_data.split()) < 3500):
+                print('File num ' + str(num) + ' has less than 3500 tokens.')
                 if (kind_reps == 1 or kind_reps == 2):
                     representation = get_representations_classify(doc_data, kind_reps)
                 elif (kind_reps == 3 or kind_reps == 4):
@@ -84,6 +84,8 @@ def get_doc_representation_test_dev(docs_dic, kind_reps, file_h5_name):
                 del representation
                 del representation_numpy
                 torch.cuda.empty_cache()
+            else:
+                print('File num ' + str(num) + ' has more than 3500 tokens and not saved.')
         except ValueError:
             print('File num ' + str(num) + ' is having problem in test or dev!!')
             print(ValueError)
