@@ -24,10 +24,12 @@ def get_doc_representation(folder, extension, kind_reps, file_h5_name):
         file_num = filename.split('_')[0]
         file_numbers.append(int(file_num))
     docs_representations = {}
+    print(file_numbers)
 
     for num in file_numbers:
+        print('File num ' + str(num) + ' is processed now to be saved before try')
         try:
-            print('File num '+str(num)+' is processed now to be saved')
+            print('File num ' + str(num) + ' is processed now to be saved before try')
             doc_data, indices = data_prepare_wmt.read_doc_by_num(folder, num, extension)
             if (len(doc_data.split()) < 3500):
                 print('File num ' + str(num) + ' has less than 3500 tokens.')
