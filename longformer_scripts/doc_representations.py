@@ -39,8 +39,11 @@ def get_doc_representation(folder, extension, kind_reps, file_h5_name):
                     representation = get_representations_seq_classify(doc_data)
                 elif kind_reps == 6:
                     representation = get_representations_masked_LM(doc_data)
-                saving_file.create_dataset(str(num), data=representation)
+
+                representation_numpy = representation.cpu().data.numpy()
+                saving_file.create_dataset(str(num), data=representation_numpy)
                 del representation
+                del representation_numpy
                 torch.cuda.empty_cache()
         except ValueError:
             print('File num ' + str(num) + ' is having problem in train!!')
@@ -76,8 +79,10 @@ def get_doc_representation_test_dev(docs_dic, kind_reps, file_h5_name):
                     representation = get_representations_seq_classify(doc_data)
                 elif kind_reps == 6:
                     representation = get_representations_masked_LM(doc_data)
-                saving_file.create_dataset(str(doc_num), data=representation)
+                representation_numpy = representation.cpu().data.numpy()
+                saving_file.create_dataset(str(num), data=representation_numpy)
                 del representation
+                del representation_numpy
                 torch.cuda.empty_cache()
         except ValueError:
             print('File num ' + str(num) + ' is having problem in test or dev!!')
