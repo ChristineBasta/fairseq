@@ -178,6 +178,8 @@ def load_langpair_dataset(
 # todo check!
 def load_longformer_representations(representations_path):
     longformer_representations = torch.load(representations_path)
+    #loading should be from hfpy
+    #todo (next)
     return longformer_representations
 
 def load_sen_doc_alignment(sen_doc_path):
@@ -287,6 +289,7 @@ class TranslationlfConfig(FairseqDataclass):
             "argparse_alias": "-lf-path",
         },
     )
+    # todo (next) three paths for h5py files
     sen_doc: Optional[str] = field(
         default=None,
         metadata={
@@ -319,6 +322,7 @@ class TranslationLfTask(FairseqTask):
         self.tgt_dict = tgt_dict
         #longformer representations
         # todo check!
+        # todo (next) h5oy
         self.lf_reps = lf_reps
         self.sen_doc_align = sen_doc_align
 
@@ -355,6 +359,7 @@ class TranslationLfTask(FairseqTask):
         logger.info("[{}] dictionary: {} types".format(cfg.target_lang, len(tgt_dict)))
         #load here the longformer reps
         # todo check!
+        # todo (next) load all of h5paths
         lf_reps = load_longformer_representations(cfg.lf_path)
         sen_doc_align = load_sen_doc_alignment(cfg.sen_doc)
         return cls(cfg, src_dict, tgt_dict, lf_reps, sen_doc_align)
@@ -376,6 +381,7 @@ class TranslationLfTask(FairseqTask):
         src, tgt = self.cfg.source_lang, self.cfg.target_lang
         #todo (christine..check on kind of split)
         #if split == self.cfg.train_subset:
+        # todo (next) load according to the split
         lf_reps=self.lf_reps[split]
         sen_doc_align=self.sen_doc_align[split]
         '''

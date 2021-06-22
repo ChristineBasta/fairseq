@@ -129,6 +129,8 @@ def collate(
         if(doc_index):
             # checking if the doc_index is in the dictionary
             if doc_index in lf_reps:
+                # todo (next) load for the h5py dataset
+                #convert to tensor as it is saved numpy
                 doc_reps_tensor[sent_batch_index] = lf_reps[doc_index]
                 mask_doc_available_ids.append(sent_batch_index)
         sent_batch_index+=1
@@ -137,6 +139,7 @@ def collate(
     mask_doc_available_ids_numpy = np.array(mask_doc_available_ids)
     mask_doc_available_ids_tensor = torch.from_numpy(mask_doc_available_ids_numpy)
     #todo: check (christine)
+
     #start of seq without paddings, get the first token after padding
 
     tokens_to_replace = src_tokens.shape[1]-src_lengths

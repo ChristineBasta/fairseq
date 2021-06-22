@@ -113,6 +113,9 @@ for file in os.listdir(tasks_dir):
         and (file.endswith(".py") or os.path.isdir(path))
     ):
         task_name = file[: file.find(".py")] if file.endswith(".py") else file
+        print('printing:')
+        print(task_name)
+        print(tasks_dir)
         module = importlib.import_module("fairseq.tasks." + task_name)
 
         # expose `task_parser` for sphinx

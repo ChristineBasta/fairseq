@@ -34,3 +34,13 @@ stdbuf -i0 -e0 -o0 fairseq-train $WORKING_DIR --task translation \
   --source-lang $SRC --target-lang $TGT --lf_path $LONGFORMER_DICT --sen_doc $SENT_DOC_ALIGN
 
 
+#to save the average and generate...check before add
+'''
+python scripts/average_checkpoints.py --inputs $SAVE \
+    --num-epoch-checkpoints 10 --output "${SAVE}/checkpoint_last10_avg.pt"
+
+# Evaluation
+fairseq-generate data-bin/iwslt14.joined-dictionary.31K.de-en --user-dir models \
+    --path "${SAVE}/checkpoint_last10_avg.pt" \
+    --batc
+'''

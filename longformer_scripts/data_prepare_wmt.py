@@ -6,7 +6,7 @@ import logging
 import argparse
 import torch
 from  get_data_statistics import get_files_stats
-
+from langdetect import detect
 # to add  number to the beginning of the name
 # we treat files as separated docs, we have Europarl, news and TED FILES
 # Files are generally divided in English and other language
@@ -14,19 +14,15 @@ from  get_data_statistics import get_files_stats
 def numbering_files(eng_dir, other_lng_dir, extension, extension_lang):
     count = 1
     for filename in sorted(os.listdir(eng_dir)):
-        #the extension is '.en' or the other language
+        #the extension is '.en' or the other languag
+
         if filename.endswith(extension):
-            print(count)
             new_file_numbered = str(count) + '_' + filename
-            print(new_file_numbered)
-            print(other_lng_dir+'/'+filename)
             os.rename(eng_dir+'/'+filename, eng_dir+'/'+new_file_numbered)
             filename_lang = filename.replace(('.'+extension), ('.'+extension_lang))
             new_file_numbered_lang=new_file_numbered.replace(('.'+extension), ('.'+extension_lang))
             os.rename(other_lng_dir+'/'+filename_lang, other_lng_dir+'/'+new_file_numbered_lang)
-            print (filename)
             count = count + 1
-
             continue
         else:
             continue

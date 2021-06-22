@@ -19,5 +19,5 @@ DOC_TEXT_T_PATH='/home/usuaris/veu/christine.raouf.saad/news_micro_2/newstest201
 #SAVE_REP_ALL='/home/usuaris/veu/christine.raouf.saad/news_micro_2/all_lf_reps.h5'
 
 python doc_representations.py --extension $EXT --folder_represent $FOLDER_PATH \
-  --which_file_reps--kind_reps $KIND_REP --doc_dic_valid $DOC_TEXT_V_PATH \
+  --kind_reps $KIND_REP --doc_dic_valid $DOC_TEXT_V_PATH \
   --doc_dic_test $DOC_TEXT_T_PATH --which_file_reps $WHICH_SET

@@ -35,7 +35,7 @@ class SimulSpeechToTextTask(SpeechToTextTask):
         super().__init__(args, tgt_dict)
 
 
-@register_task("simul_text_to_text",  dataclass=TranslationConfig)
+@register_task("simul_text_to_text", dataclass=TranslationConfig)
 class SimulTextToTextTask(TranslationTask):
     def __init__(self, cfg, src_dict, tgt_dict):
         check_import(import_successful)

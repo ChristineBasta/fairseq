@@ -49,9 +49,8 @@ def get_doc_representation(folder, extension, kind_reps, file_h5_name):
                 torch.cuda.empty_cache()
             else:
                 print('File num ' + str(num) + ' has more than 3500 tokens and not saved.')
-        except ValueError:
+        except:
             print('File num ' + str(num) + ' is having problem in train!!')
-            print(ValueError)
     saving_file.close()
 
 
@@ -88,9 +87,8 @@ def get_doc_representation_test_dev(docs_dic, kind_reps, file_h5_name):
                 torch.cuda.empty_cache()
             else:
                 print('File num ' + str(num) + ' has more than 3500 tokens and not saved.')
-        except ValueError:
+        except:
             print('File num ' + str(num) + ' is having problem in test or dev!!')
-            print(ValueError)
     saving_file.close()
 
 

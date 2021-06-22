@@ -1,6 +1,6 @@
 #!/bin/bash -v
 
-
+# Adapted from https://github.com/facebookresearch/MIXER/blob/master/prepareData.sh
 # suffix of source language files
 SRC=en
 
