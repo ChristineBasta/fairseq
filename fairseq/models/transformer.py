@@ -1210,6 +1210,8 @@ def transformer_vaswani_wmt_en_de_big(args):
     args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 4096)
     args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 16)
     args.dropout = getattr(args, "dropout", 0.3)
+    # todo(christine) defining the dimension of longformer
+    args.lf_rep_dim = getattr(args, "lf-rep-dim", 768)
     base_architecture(args)
 
 
