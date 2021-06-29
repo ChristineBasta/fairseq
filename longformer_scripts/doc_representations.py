@@ -168,7 +168,7 @@ if __name__ == "__main__":
 
     # training data part
     if(which_file_reps==1):
-        file_name_start = 'train_'
+        file_name_start = 'train'
         get_doc_representation(folder_represent, extension, kind_reps, file_name_start+file_name_end)
 
     elif (which_file_reps == 2):

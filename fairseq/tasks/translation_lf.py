@@ -289,6 +289,9 @@ class TranslationlfConfig(FairseqDataclass):
             "argparse_alias": "-lf-path",
         },
     )
+
+
+
     # todo (next) three paths for h5py files
     sen_doc: Optional[str] = field(
         default=None,
