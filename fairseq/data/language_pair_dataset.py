@@ -141,9 +141,8 @@ def collate(
     #todo: check (christine)
 
     #start of seq without paddings, get the first token after padding
-
     tokens_to_replace = src_tokens.shape[1]-src_lengths
-
+    tokens_to_replace=torch.index_select(tokens_to_replace, 0, mask_doc_available_ids_tensor)
     doc_reps_tensor=doc_reps_tensor.detach()
     doc_reps_tensor=doc_reps_tensor.float()
     batch = {
