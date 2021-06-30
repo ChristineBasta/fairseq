@@ -457,7 +457,6 @@ class TransformerEncoder(FairseqEncoder):
         print(lf_reps.shape)
         print('x shape:')
         print(x.shape)
-        print( x[doc_exist_ids,after_pad_tokens_ids,:])
         print('after_pad_ids:')
         print(after_pad_tokens_ids)
         print('doc_exist_ids:')
@@ -467,6 +466,8 @@ class TransformerEncoder(FairseqEncoder):
         #x[mask_ids,pad,:] for certain ids with the token after left pad
         x[doc_exist_ids,after_pad_tokens_ids,:] = lf_reps_after_trans
         print('after change:')
+        print('x shape:')
+        print(x.shape)
         print( x[doc_exist_ids,after_pad_tokens_ids,:])
 
         #x[:, 0] = lf_reps_after_trans
