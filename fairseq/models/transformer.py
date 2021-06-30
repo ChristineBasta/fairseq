@@ -462,6 +462,8 @@ class TransformerEncoder(FairseqEncoder):
         print('doc_exist_ids:')
         print(doc_exist_ids)
         lf_reps_after_trans = self.lin_lf(lf_reps)
+        print('longformer reps after trans:')
+        print(lf_reps_after_trans.shape)
         #x[mask_ids, 0,:] for certain ids to be replaced
         #x[mask_ids,pad,:] for certain ids with the token after left pad
         x[doc_exist_ids,after_pad_tokens_ids,:] = lf_reps_after_trans
