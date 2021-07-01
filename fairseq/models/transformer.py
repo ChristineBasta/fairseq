@@ -1197,6 +1197,7 @@ def transformer_iwslt_de_en(args):
     args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 1024)
     args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 4)
     args.decoder_layers = getattr(args, "decoder_layers", 6)
+    args.lf_rep_dim=getattr(args, "lf-rep-dim", 768)
     base_architecture(args)
 
 

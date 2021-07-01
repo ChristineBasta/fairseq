@@ -6,6 +6,8 @@ class LongformerUsage:
     def __init__(self):
         self.model = LongformerModel.from_pretrained('allenai/longformer-base-4096')
         self.tokenizer = LongformerTokenizer.from_pretrained('allenai/longformer-base-4096')
+        self.model_maskedmodel = LongformerForMaskedLM.from_pretrained('allenai/longformer-base-4096')
+        self.sequence_classify_model = LongformerForSequenceClassification.from_pretrained('allenai/longformer-base-4096')
     # LongformerModel output
     #classify_model is set to ture if classification is targeted, and false if modeling
     #to change the
@@ -46,13 +48,13 @@ class LongformerUsage:
 
     # LongformerForMaskedLM
     def get_output_maskedLM(self, sample_text):
-        model = LongformerForMaskedLM.from_pretrained('allenai/longformer-base-4096')
+
 
         #SAMPLE_TEXT = ' '.join(['Hello world! '] * 1000)  # long input document
         input_ids = torch.tensor(self.tokenizer.encode(sample_text)).unsqueeze(0)  # batch of size 1
         attention_mask = None  # default is local attention everywhere, which is a good choice for MaskedLM
         # check ``LongformerModel.forward`` for more details how to set `attention_mask`
-        outputs = model(input_ids, attention_mask=attention_mask, labels=input_ids, output_hidden_states=True, output_attentions=True)
+        outputs = self.model_maskedmodel(input_ids, attention_mask=attention_mask, labels=input_ids, output_hidden_states=True, output_attentions=True)
         loss = outputs.loss
         prediction_logits = outputs.logits
         mean_last_hidden=torch.mean(outputs.hidden_states[len( outputs.hidden_states)-1], dim=1)
@@ -60,11 +62,11 @@ class LongformerUsage:
 
     #LongFormer sequence classification
     def get_output_seq_classification(self,sentence):
-        model = LongformerForSequenceClassification.from_pretrained('allenai/longformer-base-4096')
+
         #inputs = tokenizer("Hello, my dog is cute", return_tensors="pt")
         inputs = self.tokenizer(sentence, return_tensors="pt")
         labels = torch.tensor([1]).unsqueeze(0)  # Batch size 1
-        outputs = model(**inputs, labels=labels, output_hidden_states=True, output_attentions=True)
+        outputs = self.sequence_classify_model(**inputs, labels=labels, output_hidden_states=True, output_attentions=True)
         loss = outputs.loss
         logits = outputs.logits
         mean_last_hidden = torch.mean(outputs.hidden_states[len(outputs.hidden_states) - 1], dim=1)
