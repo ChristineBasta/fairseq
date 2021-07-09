@@ -166,6 +166,8 @@ if __name__ == "__main__":
     elif (kind_reps == 6):
         file_name_end = '_lm_masked.h5'
 
+    print('kind_reps:::')
+    print(kind_reps)
     # training data part
     if(which_file_reps==1):
         file_name_start = 'train'

@@ -18,7 +18,6 @@ from fairseq import metrics, utils
 from fairseq.data import (
     AppendTokenDataset,
     ConcatDataset,
-    LanguagePairDataset,
     PrependTokenDataset,
     StripTokenDataset,
     TruncateDataset,
@@ -27,6 +26,7 @@ from fairseq.data import (
     indexed_dataset,
 )
 from fairseq.data.indexed_dataset import get_available_dataset_impl
+from fairseq.data.language_pair_dataset_lf import LanguagePairDatasetLf
 from fairseq.dataclass import ChoiceEnum, FairseqDataclass
 from fairseq.tasks import FairseqTask, register_task
 
@@ -156,7 +156,7 @@ def load_langpair_dataset(
             )
 
     tgt_dataset_sizes = tgt_dataset.sizes if tgt_dataset is not None else None
-    return LanguagePairDataset(
+    return LanguagePairDatasetLf(
         src_dataset,
         src_dataset.sizes,
         src_dict,
@@ -422,7 +422,7 @@ class TranslationLfTask(FairseqTask):
 
 
     def build_dataset_for_inference(self, src_tokens, src_lengths, constraints=None):
-        return LanguagePairDataset(
+        return LanguagePairDatasetLf(
             src_tokens,
             src_lengths,
             self.source_dictionary,

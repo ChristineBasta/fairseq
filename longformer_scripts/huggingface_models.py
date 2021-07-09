@@ -87,14 +87,6 @@ class LongformerUsage:
             index=index+1
         return list_indices_start, list_indices_end
 
-class BertUsage:
-    def __init__(self):
-        self.model = LongformerModel.from_pretrained('allenai/longformer-base-4096')
-        self.tokenizer = LongformerTokenizer.from_pretrained('allenai/longformer-base-4096')
-        # LongformerModel output
-
-    def get_output(self, doc_string):
-        return doc_string
 
 if __name__ == "__main__":
     print ('main')
