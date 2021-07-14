@@ -45,5 +45,5 @@ done
 #adding <DOC> token
 for prefix in train valid test2015
 do
-  sed -i 's/^/<DOC> /' $data_folder/$prefix.tok.tc.$SRC
+  sed 's/^/<DOC> /' $data_folder/$prefix.tok.tc.$SRC > $prefix.tok.tc.doc.$SRC
 done
