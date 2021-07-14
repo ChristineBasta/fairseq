@@ -10,7 +10,7 @@ def clean_directory(eng_dir, other_lng_dir, en_extension, extension_lang, new_en
     os.mkdir(new_lang_folder)
     for filename in sorted(os.listdir(other_lng_dir)):
         # the extension is '.en' or the other language
-        filename_wt_ext=filename.split(".")[-1]
+        filename_wt_ext=filename.rsplit('.',1)[0]
         text, _ = data_prepare_wmt.get_text_from_file(eng_dir + '/' + filename_wt_ext+'.'+en_extension)
         text_other_lang, _ = data_prepare_wmt.get_text_from_file(other_lng_dir + '/' + filename_wt_ext+'.'+extension_lang)
         if text and text_other_lang:
