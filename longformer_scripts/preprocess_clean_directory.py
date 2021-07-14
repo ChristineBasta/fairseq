@@ -10,8 +10,9 @@ def clean_directory(eng_dir, other_lng_dir, en_extension, extension_lang, new_en
     os.mkdir(new_lang_folder)
     for filename in sorted(os.listdir(other_lng_dir)):
         # the extension is '.en' or the other language
-        text, _ = data_prepare_wmt.get_text_from_file(eng_dir + '/' + filename)
-        text_other_lang, _ = data_prepare_wmt.get_text_from_file(other_lng_dir + '/' + filename)
+        filename_wt_ext=filename.split(".")[-1]
+        text, _ = data_prepare_wmt.get_text_from_file(eng_dir + '/' + filename_wt_ext+'.'+en_extension)
+        text_other_lang, _ = data_prepare_wmt.get_text_from_file(other_lng_dir + '/' + filename_wt_ext+'.'+extension_lang)
         if text and text_other_lang:
             lang = detect(text)
             lang_2 = detect(text_other_lang)
@@ -24,8 +25,8 @@ def clean_directory(eng_dir, other_lng_dir, en_extension, extension_lang, new_en
                 # do not move the file to the, else move it
             else:
                 print('copy to the new folder')
-                shutil.copy(eng_dir + '/' + filename, new_en_folder)
-                shutil.copy(other_lng_dir + '/' + filename, new_lang_folder)
+                shutil.copy(eng_dir + '/' + filename_wt_ext+'.'+en_extension, new_en_folder)
+                shutil.copy(other_lng_dir + '/' + filename_wt_ext+'.'+extension_lang, new_lang_folder)
         else:
             print(filename + ' has only one line, which is probably title.')
 
