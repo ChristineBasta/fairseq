@@ -6,8 +6,10 @@ import logging
 
 
 def clean_directory(eng_dir, other_lng_dir, en_extension, extension_lang, new_en_folder, new_lang_folder):
-    os.mkdir(new_en_folder)
-    os.mkdir(new_lang_folder)
+    if not os.path.exists(new_en_folder):
+        os.mkdir(new_en_folder)
+    if not os.path.exists(new_lang_folder):
+        os.mkdir(new_lang_folder)
     for filename in sorted(os.listdir(other_lng_dir)):
         # the extension is '.en' or the other language
         filename_wt_ext=filename.rsplit('.',1)[0]
