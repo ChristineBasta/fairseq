@@ -40,8 +40,8 @@ DEFAULT_MAX_TARGET_POSITIONS = 1024
 DEFAULT_MIN_PARAMS_TO_WRAP = int(1e8)
 
 
-@register_model("transformer_lf")
-class TransformerLFModel(FairseqEncoderDecoderModel):
+@register_model("transformer_lf_segment")
+class TransformerLFSegmentModel(FairseqEncoderDecoderModel):
     """
     Transformer model from `"Attention Is All You Need" (Vaswani, et al, 2017)
     <https://arxiv.org/abs/1706.03762>`_.
@@ -419,6 +419,7 @@ class TransformerEncoder(FairseqEncoder):
             self.layer_norm = None
 
         #segment embeddings
+        self.segment_embeddings = Embedding(2, embed_dim,  self.padding_idx)
         self.lf_rep_dim=args.lf_rep_dim
         print('lf_rep_dim in transformer class:')
         print(self.lf_rep_dim)
@@ -445,7 +446,7 @@ class TransformerEncoder(FairseqEncoder):
         after_pad_tokens_ids: Optional = None,
     ):
 
-
+        segments = torch.zeros([src_tokens.shape[0], src_tokens.shape[1]],  dtype=torch.int32)
         # embed tokens and positions
         if token_embedding is None:
             token_embedding = self.embed_tokens(src_tokens)
@@ -474,8 +475,13 @@ class TransformerEncoder(FairseqEncoder):
         print( x[doc_exist_ids,after_pad_tokens_ids,:])
 
         #x[:, 0] = lf_reps_after_trans
+        segments[doc_exist_ids,after_pad_tokens_ids] = 1
+        print('segments:')
+        print(segments)
         if self.embed_positions is not None:
             x = embed + self.embed_positions(src_tokens)
+        if self.segment_embeddings is not None:
+            x = x + self.segment_embeddings( segments)
         if self.layernorm_embedding is not None:
             x = self.layernorm_embedding(x)
         x = self.dropout_module(x)
@@ -1117,7 +1123,7 @@ def Linear(in_features, out_features, bias=True):
     return m
 
 
-@register_model_architecture("transformer_lf", "transformer_lf_tiny")
+@register_model_architecture("transformer_lf_segment", "transformer_lf_segment_tiny")
 def tiny_architecture(args):
     args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 64)
     args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 64)
@@ -1130,7 +1136,7 @@ def tiny_architecture(args):
     base_architecture(args)
 
 
-@register_model_architecture("transformer_lf", "transformer_lf")
+@register_model_architecture("transformer_lf_segment", "transformer_lf_segment")
 def base_architecture(args):
     args.encoder_embed_path = getattr(args, "encoder_embed_path", None)
     args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
@@ -1186,7 +1192,7 @@ def base_architecture(args):
     args.quant_noise_scalar = getattr(args, "quant_noise_scalar", 0)
 
 
-@register_model_architecture("transformer_lf", "transformer_lf_iwslt_de_en")
+@register_model_architecture("transformer_lf_segment", "transformer_lf_segment_iwslt_de_en")
 def transformer_iwslt_de_en(args):
     args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
     args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 1024)
@@ -1200,13 +1206,13 @@ def transformer_iwslt_de_en(args):
     base_architecture(args)
 
 
-@register_model_architecture("transformer_lf", "transformer_lf_wmt_en_de")
+@register_model_architecture("transformer_lf_segment", "transformer_lf_segment_wmt_en_de")
 def transformer_wmt_en_de(args):
     base_architecture(args)
 
 
 # parameters used in the "Attention Is All You Need" paper (Vaswani et al., 2017)
-@register_model_architecture("transformer_lf", "transformer_lf_vaswani_wmt_en_de_big")
+@register_model_architecture("transformer_lf_segment", "transformer_lf_segment_vaswani_wmt_en_de_big")
 def transformer_vaswani_wmt_en_de_big(args):
     args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 1024)
     args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 4096)
@@ -1221,20 +1227,20 @@ def transformer_vaswani_wmt_en_de_big(args):
     base_architecture(args)
 
 
-@register_model_architecture("transformer_lf", "transformer_lf_vaswani_wmt_en_fr_big")
+@register_model_architecture("transformer_lf_segment", "transformer_lf_segment_vaswani_wmt_en_fr_big")
 def transformer_vaswani_wmt_en_fr_big(args):
     args.dropout = getattr(args, "dropout", 0.1)
     transformer_vaswani_wmt_en_de_big(args)
 
 
-@register_model_architecture("transformer_lf", "transformer_lf_wmt_en_de_big")
+@register_model_architecture("transformer_lf_segment", "transformer_lf_segment_wmt_en_de_big")
 def transformer_wmt_en_de_big(args):
     args.attention_dropout = getattr(args, "attention_dropout", 0.1)
     transformer_vaswani_wmt_en_de_big(args)
 
 
 # default parameters used in tensor2tensor implementation
-@register_model_architecture("transformer_lf", "transformer_lf_wmt_en_de_big_t2t")
+@register_model_architecture("transformer_lf_segment", "transformer_lf_segment_wmt_en_de_big_t2t")
 def transformer_wmt_en_de_big_t2t(args):
     args.encoder_normalize_before = getattr(args, "encoder_normalize_before", True)
     args.decoder_normalize_before = getattr(args, "decoder_normalize_before", True)
