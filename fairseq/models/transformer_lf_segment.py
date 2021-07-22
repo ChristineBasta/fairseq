@@ -478,10 +478,12 @@ class TransformerEncoder(FairseqEncoder):
         segments[doc_exist_ids,after_pad_tokens_ids] = 1
         print('segments:')
         print(segments)
+        if torch.cuda.is_available():
+            segments = segments.to('cuda')
         if self.embed_positions is not None:
             x = embed + self.embed_positions(src_tokens)
         if self.segment_embeddings is not None:
-            x = x + self.segment_embeddings( segments)
+            x = x + self.segment_embeddings(segments)
         if self.layernorm_embedding is not None:
             x = self.layernorm_embedding(x)
         x = self.dropout_module(x)
