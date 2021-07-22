@@ -446,7 +446,7 @@ class TransformerEncoder(FairseqEncoder):
         after_pad_tokens_ids: Optional = None,
     ):
 
-        segments = torch.zeros([src_tokens.shape[0], src_tokens.shape[1]],  dtype=torch.int32)
+        segments = torch.zeros([src_tokens.shape[0], src_tokens.shape[1]],  dtype=torch.long)
         # embed tokens and positions
         if token_embedding is None:
             token_embedding = self.embed_tokens(src_tokens)
