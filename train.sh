@@ -28,7 +28,7 @@ mkdir -p $CP_DIR
 # --user-dir fairseq/tasks/
 #--min-lr 1e-09
 stdbuf -i0 -e0 -o0 $PYTHON train.py $WORKING_DIR --task translation_lf\
-  --arch  transformer_lf_tiny  --optimizer adam --adam-betas '(0.9, 0.98)' --batch-size 8\
+  --arch  transformer_lf_segment_tiny  --optimizer adam --adam-betas '(0.9, 0.98)' --batch-size 8\
   --clip-norm 0.0 --lr-scheduler inverse_sqrt --warmup-init-lr 1e-07 \
   --warmup-updates 4000 --lr 0.001  --dropout 0.1\
   --weight-decay 0.0 --criterion label_smoothed_cross_entropy --label-smoothing 0.1 \

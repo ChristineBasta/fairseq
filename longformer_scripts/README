@@ -6,18 +6,21 @@ It removes the lines that have AUTHOR, <P> and empty lines
 
 2- run prepare_data.sh
 remember to turn oin the numbering boolean if u want files to be numbered
-change the extensions of the files according to whatis available
+change the extensions of the files according to what is available
 
 
 this  file numbers the files
 it gets the statistics, how many lines
 it forms the all_file which contains all th files text if they are less than a certain number of lines
 it forms sent_doc_dic for training
-for test and dev... it gets the text of ech file
+
+for test and dev... it gets the text of each file
 It forms the doc_text dictionary which has the text for all the documents of the files.
 It also makes sent_doc_dic for test and dev data.
+it makes the all_set_doc_text_alignment which is important for the training
 
 3- run preprocess_tok_tc_doc.sh
+names should be named from teh above steps test and valid to save the renaming process
 remember to move the all files to data folder to preprocess and revise names
 
 This  step is for tokenizing and truecasing and adding <DOC> at the beginning of sentences
@@ -26,9 +29,11 @@ This  step is for tokenizing and truecasing and adding <DOC> at the beginning of
 make sure that the lftransfomer_model folder does not have previous copies
 this is for bpe and fairseq-preprocess the data
 
+we need to run fairseq-preprocess on those without <doc> for the baseline
+
 
 5-Finally
-run longformer_representations_script three times with
+run longformer_representations_script three times for the four reps with
 different kind_reps to get the longformer representations of the train, test and dev
 
 6- run longformer_dics.sh to make the dictionary of the three sets together in one file to be ready for training
