@@ -37,9 +37,11 @@ class DocRepresent:
                     elif (kind_reps == 3 or kind_reps == 4):
                         representation = self.get_representations_model(doc_data, kind_reps)
                     elif kind_reps == 5:
-                        representation = self.get_representations_seq_classify(doc_data)
-                    elif kind_reps == 6:
-                        representation = self.get_representations_masked_LM(doc_data)
+                        representation = self.get_certain_tokens(doc_data, kind_reps, classify_model=True)
+                    elif kind_reps == 6 or kind_reps == 7:
+                        representation = self.get_certain_tokens(doc_data, kind_reps, classify_model=False)
+                    elif (kind_reps == 8 or kind_reps == 9 or kind_reps == 10 or kind_reps == 11):
+                        representation = self.get_representations_led(doc_data, kind_reps)
 
                     representation_numpy = representation.cpu().data.numpy()
                     saving_file.create_dataset(str(num), data=representation_numpy)
@@ -192,9 +194,19 @@ if __name__ == "__main__":
     elif (kind_reps == 4):
         file_name_end = '_pooled_model.h5'
     elif (kind_reps == 5):
-        file_name_end = '_seq_classify.h5'
+        file_name_end = '_first_token_classify.h5'
     elif (kind_reps == 6):
-        file_name_end = '_lm_masked.h5'
+        file_name_end = '_mean_global_tokens.h5'
+    elif (kind_reps == 7):
+        file_name_end = '_global_tokens.h5'
+    elif (kind_reps == 8):
+        file_name_end = '_led_mean_last_hidden.h5'
+    elif (kind_reps == 9):
+        file_name_end = '_led_mean_encoder_last_hidden.h5'
+    elif (kind_reps == 10):
+        file_name_end = '_led_first_token_last_hidden.h5'
+    elif (kind_reps == 11):
+        file_name_end = '_led_first_token_encoder_last_hidden.h5'
 
     print('kind_reps:::')
     print(kind_reps)
