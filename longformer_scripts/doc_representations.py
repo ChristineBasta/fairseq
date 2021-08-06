@@ -154,6 +154,7 @@ if __name__ == "__main__":
 
     logger = logging.getLogger('context.log')  # pylint: disable=invalid-name
     parser = argparse.ArgumentParser()
+    parser.add_argument("--file_name", help="file_name")
     parser.add_argument("--extension", help="extension")
     parser.add_argument("--folder_represent",
                         help="the folder of training which we are going to have lf represenattions for each document")
@@ -165,6 +166,8 @@ if __name__ == "__main__":
     #parser.add_argument("--save_reps_test", help="file to save representations of test")
     #parser.add_argument("--save_reps_all", help="file to save representations of all together")
     parser.add_argument("--which_file_reps", help="integer, 1 for train, 2 for valid, 3 for test and 4 for all")
+
+
     args = parser.parse_args()
     logger.info(args)
     extension = args.extension
@@ -173,6 +176,7 @@ if __name__ == "__main__":
     kind_reps = int(args.kind_reps)
     doc_text_valid_file = args.doc_dic_valid
     doc_text_test_file = args.doc_dic_test
+    file_name = args.file_name
     #save_reps_valid = args.save_reps_valid
     #save_reps_test = args.save_reps_test
     #save_reps_all = args.save_reps_all
@@ -196,17 +200,17 @@ if __name__ == "__main__":
     print(kind_reps)
     # training data part
     if(which_file_reps==1):
-        file_name_start = 'train'
+        file_name_start = file_name+'train'
         docrepresent.get_doc_representation(folder_represent, extension, kind_reps, file_name_start+file_name_end)
 
     elif (which_file_reps == 2):
         doc_text_valid_dict = torch.load(doc_text_valid_file)
-        file_name_start = 'valid'
+        file_name_start = file_name+'valid'
         docrepresent.get_doc_representation_test_dev(doc_text_valid_dict, kind_reps, file_name_start+file_name_end)
 
     elif (which_file_reps == 3):
         doc_text_test_dict = torch.load(doc_text_test_file)
-        file_name_start = 'test'
+        file_name_start = file_name+'test'
         docrepresent.get_doc_representation_test_dev(doc_text_test_dict, kind_reps, file_name_start+file_name_end)
 
 
