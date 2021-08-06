@@ -78,10 +78,14 @@ class DocRepresent:
                         representation = self.get_representations_classify(doc_data, kind_reps)
                     elif (kind_reps == 3 or kind_reps == 4):
                         representation = self.get_representations_model(doc_data, kind_reps)
+                    # will remove seq_classify and masked_LM as we are not using them
+                    # replace them with certain tokens representations
                     elif kind_reps == 5:
-                        representation = self.get_representations_seq_classify(doc_data)
-                    elif kind_reps == 6:
-                        representation = self.get_representations_masked_LM(doc_data)
+                        representation = self.get_certain_tokens(doc_data, kind_reps, classify_model=True)
+                    elif kind_reps == 6 or kind_reps == 7:
+                        representation = self.get_certain_tokens(doc_data, kind_reps, classify_model=False)
+                    elif (kind_reps == 8 or kind_reps == 9 or kind_reps == 10 or kind_reps == 11):
+                        representation = self.get_representations_led(doc_data, kind_reps)
                     representation_numpy = representation.cpu().data.numpy()
                     saving_file.create_dataset(str(num), data=representation_numpy)
                     del representation
@@ -103,12 +107,35 @@ class DocRepresent:
             return pooled_output1
 
 
+    def get_representations_led(self, doc_data, kind_reps):
+        mean_last_hidden, mean_encoder_last_hidden, first_token_encoder_last, first_token_last = self.longFormer.get_led_representation(doc_data)
+        if kind_reps == 8:
+            return mean_last_hidden
+        elif kind_reps == 9:
+            return mean_encoder_last_hidden
+        elif kind_reps == 10:
+            return first_token_encoder_last
+        elif kind_reps == 11:
+            return first_token_last
+
+    def get_certain_tokens(self, doc_data, kind_reps, classify_model):
+        first_token_last_hidden, mean_global_attentions, global_attention_tokens = self.longFormer.get_output_certain_tokens(doc_data, classify_model)
+        if kind_reps == 5:
+            return first_token_last_hidden
+        elif kind_reps == 6:
+            return mean_global_attentions
+        elif kind_reps == 7:
+            return global_attention_tokens
+
+
     def get_representations_model(self, doc_data, kind_reps):
         outputs1, mean_sequence_output1, pooled_output1 = self.longFormer.get_output(doc_data, classify_model=False)
         if kind_reps == 3:
             return mean_sequence_output1
         elif kind_reps == 4:
             return pooled_output1
+
+
 
 
     def get_representations_seq_classify(self, doc_data):

@@ -59,7 +59,7 @@ class LongformerUsage:
         global_attention_tokens = torch.index_select(outputs.last_hidden_state[0], 0, start_tensor)
         mean_global_attentions=torch.mean(global_attention_tokens, dim=0)
         mean_global_attentions = mean_global_attentions.view(1, -1)
-        return first_token_last_hidden, global_attention_tokens, mean_global_attentions
+        return first_token_last_hidden, mean_global_attentions, global_attention_tokens
 
     # LongformerForMaskedLM
     def get_output_maskedLM(self, sample_text):
