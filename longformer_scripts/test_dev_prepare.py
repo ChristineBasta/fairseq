@@ -75,6 +75,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     logger.info(args)
+
     file_read_src = args.file_read_src
     file_read_ref = args.file_read_ref
     file_write_src = args.file_write_src
