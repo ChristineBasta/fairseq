@@ -17,6 +17,7 @@ class DocRepresent:
 
     def get_doc_representation(self,folder, extension, kind_reps, file_h5_name):
         # ,max no.of documents
+        print(file_h5_name)
         saving_file = h5py.File(file_h5_name, 'a')
         file_numbers = []
         for filename in os.listdir(folder):
