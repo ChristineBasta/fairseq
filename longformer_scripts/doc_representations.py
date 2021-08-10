@@ -97,8 +97,12 @@ class DocRepresent:
                     torch.cuda.empty_cache()
                 else:
                     print('File num ' + str(num) + ' has more than 3500 tokens and not saved.')
-            except:
+            except Exception as ex:
+                template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+                message = template.format(type(ex).__name__, ex.args)
+                print(message)
                 print('File num ' + str(num) + ' is having problem in test or dev!!')
+
         saving_file.close()
 
 
