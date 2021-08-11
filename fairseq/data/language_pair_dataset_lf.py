@@ -138,12 +138,12 @@ def collate(
     # ids of available docs, ds to replace
     print('mask_doc_available:::')
     print( mask_doc_available_ids)
-    if(len(mask_doc_available_ids)==0):
+    if(len(mask_doc_available_ids)!=0):
         print('********nooo docs*********')
     mask_doc_available_ids_numpy = np.array(mask_doc_available_ids)
     mask_doc_available_ids_tensor = torch.from_numpy(mask_doc_available_ids_numpy)
-    #todo: check (christine)
-
+    print( 'mask_doc_available_ids_tensor')
+    print(mask_doc_available_ids_tensor)
     #start of seq without paddings, get the first token after padding
     tokens_to_replace = src_tokens.shape[1]-src_lengths
     print('tokens_to_replace:::')
