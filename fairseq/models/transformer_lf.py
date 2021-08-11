@@ -462,6 +462,7 @@ class TransformerEncoder(FairseqEncoder):
         print(after_pad_tokens_ids)
         print('doc_exist_ids:')
         print(doc_exist_ids)
+        # added 11 Aug...can be removed
         if(torch.numel(doc_exist_ids)):
             lf_reps_after_trans = self.lin_lf(lf_reps)
             print('longformer reps after trans:')
