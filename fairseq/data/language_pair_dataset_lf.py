@@ -149,10 +149,10 @@ def collate(
     print('tokens_to_replace:::')
     print(tokens_to_replace)
 
-
-    tokens_to_replace=torch.index_select(tokens_to_replace, 0, mask_doc_available_ids_tensor)
-
-    doc_reps_tensor = torch.index_select(doc_reps_tensor, 0, mask_doc_available_ids_tensor)
+    #checking if there are elements in mask_doc_available_ids_tensor
+    if(torch.numel(mask_doc_available_ids_tensor)):
+        tokens_to_replace=torch.index_select(tokens_to_replace, 0, mask_doc_available_ids_tensor)
+        doc_reps_tensor = torch.index_select(doc_reps_tensor, 0, mask_doc_available_ids_tensor)
     doc_reps_tensor=doc_reps_tensor.detach()
     doc_reps_tensor=doc_reps_tensor.float()
     batch = {
