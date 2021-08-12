@@ -114,9 +114,17 @@ def collate(
         ntokens = src_lengths.sum().item()
     #lf_reps
 
-    #todo: check..substituting indices are right
+
+    #todo:13-aug- if the lf_reps are empty like in case of winomt
     #getting the embedding size
-    embedding_size=lf_reps[1].shape[1]
+    if 1 in lf_reps:
+        embedding_size=lf_reps[1].shape[1]
+    else:
+        for key in lf_reps:
+            embedding_size = lf_reps[key].shape[1]
+
+
+
     #(batch_size, longformer_embeddings)
     doc_reps_tensor = torch.zeros((id.shape[0], embedding_size), dtype=torch.float64)
     #for the ids that we will work only
