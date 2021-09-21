@@ -29,8 +29,9 @@ def prepare_translation_dictionaries(file_path, file_h5_name, kind_reps):
     with open(file_path) as fp:
         # do not write first line
         line = fp.readline()
-
+        print(line)
         lf_line_rep=get_representation(line, kind_reps)
+        print(lf_line_rep)
         representation_numpy = lf_line_rep.cpu().data.numpy()
         saving_file.create_dataset(str(count), data=representation_numpy)
         sent_doc_dic[count] = count
