@@ -27,7 +27,7 @@ def prepare_translation_dictionaries(file_path, file_h5_name, kind_reps):
     print(file_path)
     count = 1
     saving_file = h5py.File(file_h5_name, 'a')
-    sent_doc_dic=[]
+    sent_doc_dic={}
     with open(file_path) as fp:
         # do not write first line
         line = fp.readline()
