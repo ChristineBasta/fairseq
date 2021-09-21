@@ -7,16 +7,17 @@ from doc_representations import DocRepresent
 import h5py
 doc_represent=DocRepresent()
 def get_representation(line, kind_reps):
+
     if (kind_reps == 1 or kind_reps == 2):
-        representation = DocRepresent.get_representations_classify(line, kind_reps)
+        representation = doc_represent.get_representations_classify(line, kind_reps)
     elif (kind_reps == 3 or kind_reps == 4):
-        representation = DocRepresent.get_representations_model(line, kind_reps)
+        representation = doc_represent.get_representations_model(line, kind_reps)
     elif kind_reps == 5:
-        representation = DocRepresent.get_certain_tokens(line, kind_reps, classify_model=True)
+        representation = doc_represent.get_certain_tokens(line, kind_reps, classify_model=True)
     elif kind_reps == 6 or kind_reps == 7:
-        representation = DocRepresent.get_certain_tokens(line, kind_reps, classify_model=False)
+        representation = doc_represent.get_certain_tokens(line, kind_reps, classify_model=False)
     elif (kind_reps == 8 or kind_reps == 9 or kind_reps == 10 or kind_reps == 11):
-        representation = DocRepresent.get_representations_led(line, kind_reps)
+        representation = doc_represent.get_representations_led(line, kind_reps)
 
     return representation
 
