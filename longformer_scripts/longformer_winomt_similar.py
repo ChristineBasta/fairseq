@@ -7,7 +7,6 @@ from doc_representations import DocRepresent
 import h5py
 doc_represent=DocRepresent()
 def get_representation(line, kind_reps):
-
     if (kind_reps == 1 or kind_reps == 2):
         representation = doc_represent.get_representations_classify(line, kind_reps)
     elif (kind_reps == 3 or kind_reps == 4):
