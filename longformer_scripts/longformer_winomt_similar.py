@@ -42,10 +42,10 @@ def prepare_translation_dictionaries(file_path, file_h5_name, kind_reps):
             # print("Line {}: {}".format(count, line.strip()))
             line = fp.readline()
             lf_line_rep=get_representation(line, kind_reps)
-        representation_numpy = lf_line_rep.cpu().data.numpy()
-        saving_file.create_dataset(str(count), data=representation_numpy)
-        sent_doc_dic[count] = count
-        count += 1
+            representation_numpy = lf_line_rep.cpu().data.numpy()
+            saving_file.create_dataset(str(count), data=representation_numpy)
+            sent_doc_dic[count] = count
+            count += 1
     saving_file.close()
     return sent_doc_dic
 
