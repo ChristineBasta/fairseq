@@ -7,8 +7,10 @@ from doc_representations import DocRepresent
 import h5py
 doc_represent=DocRepresent()
 def get_representation(line, kind_reps):
+    print(kind_reps)
     representation=None
     if (kind_reps == 1 or kind_reps == 2):
+        print('entered')
         representation = doc_represent.get_representations_classify(line, kind_reps)
     elif (kind_reps == 3 or kind_reps == 4):
         representation = doc_represent.get_representations_model(line, kind_reps)
@@ -31,7 +33,7 @@ def prepare_translation_dictionaries(file_path, file_h5_name, kind_reps):
         line = fp.readline()
         print(line)
         lf_line_rep=get_representation(line, kind_reps)
-        print(lf_line_rep)
+
         representation_numpy = lf_line_rep.cpu().data.numpy()
         saving_file.create_dataset(str(count), data=representation_numpy)
         sent_doc_dic[count] = count
@@ -64,7 +66,7 @@ if __name__ == "__main__":
     winomt_file = args.winomt_file
     longformer_dict_file = args.longformer_dict_file
     sen_doc_alignment_file = args.sen_doc_alignment
-    kind_reps = args.kind_reps
+    kind_reps = int(args.kind_reps)
 
 
     sen_doc_align = prepare_translation_dictionaries(winomt_file, longformer_dict_file, kind_reps)
