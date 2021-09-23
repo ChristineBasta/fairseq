@@ -5,8 +5,10 @@ import argparse
 
 from doc_representations import DocRepresent
 import h5py
+import prepare_h5_lf_reps
+
 doc_represent=DocRepresent()
-def get_representation(line, kind_reps):
+def get_representation( line, kind_reps):
     print(kind_reps)
     representation=None
     if (kind_reps == 1 or kind_reps == 2):
@@ -39,6 +41,7 @@ def prepare_translation_dictionaries(file_path, file_h5_name, kind_reps):
         sent_doc_dic[count] = count
         count += 1
         while line:
+            print(count)
             # print("Line {}: {}".format(count, line.strip()))
             line = fp.readline()
             lf_line_rep=get_representation(line, kind_reps)
@@ -56,7 +59,8 @@ if __name__ == "__main__":
     logger = logging.getLogger('context.log')  # pylint: disable=invalid-name
     parser = argparse.ArgumentParser()
     parser.add_argument("--winomt_file", help="winomt file")
-    parser.add_argument("--longformer_dict_file", help="long former dict file ")
+    parser.add_argument("--longformer_h5_file", help="long former dict file ")
+    parser.add_argument("--longformer_final_file", help="long former final representations file ")
     parser.add_argument("--sen_doc_alignment", help="sen-doc alignment file")
     parser.add_argument("--kind_reps", help="kind of representations")
 
@@ -64,11 +68,29 @@ if __name__ == "__main__":
     logger.info(args)
 
     winomt_file = args.winomt_file
-    longformer_dict_file = args.longformer_dict_file
+    longformer_h5_file = args.longformer_h5_file
+    longformer_final_file = args.longformer_final_file
     sen_doc_alignment_file = args.sen_doc_alignment
     kind_reps = int(args.kind_reps)
 
 
-    sen_doc_align = prepare_translation_dictionaries(winomt_file, longformer_dict_file, kind_reps)
+    sen_doc_align = prepare_translation_dictionaries(winomt_file, longformer_h5_file, kind_reps)
+    print(sen_doc_align)
 
-    torch.save(sen_doc_align, sen_doc_alignment_file)
+
+    dict_all = {}
+    dict_all['train'] = sen_doc_align
+    dict_all['valid'] = sen_doc_align
+    dict_all['test'] = sen_doc_align
+
+    torch.save(dict_all, sen_doc_alignment_file)
+
+
+    train_h5_file = longformer_h5_file
+    valid_h5_file = longformer_h5_file
+    test_h5_file = longformer_h5_file
+
+    file_to_save = args.longformer_final_file
+
+    dict_all = prepare_h5_lf_reps.prepare_dict(train_h5_file, valid_h5_file, test_h5_file)
+    torch.save(dict_all, file_to_save)
