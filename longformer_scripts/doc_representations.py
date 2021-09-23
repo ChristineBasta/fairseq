@@ -109,6 +109,7 @@ class DocRepresent:
 
     def get_representations_classify(self, doc_data, kind_reps):
         outputs1, mean_sequence_output1, pooled_output1 = self.longFormer.get_output(doc_data, classify_model=True)
+        print(mean_sequence_output1)
         if kind_reps == 1:
             return mean_sequence_output1
         elif kind_reps == 2:
