@@ -7,7 +7,7 @@
 #SBATCH --ignore-pbs
 #SBATCH --output=prepare_data
 
-TRAIN_H5='/home/christine/news-commentary/train__mean_classify.h5'
+TRAIN_H5='/home/christine/news-commentary/train_mean_classify.h5'
 VALID_H5='/home/christine/news-commentary/valid_mean_classify.h5'
 TEST_H5='/home/christine/news-commentary/test_mean_classify.h5'
 SAVE_H5='/home/christine/news-commentary/all_lf_classify.h5'
