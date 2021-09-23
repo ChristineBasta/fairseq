@@ -5,11 +5,11 @@
 #SBATCH --gres=gpu:0
 #SBATCH --mem=20G # Memory
 #SBATCH --ignore-pbs
-#SBATCH --output=prepare_data
+#SBATCH --output=winomt_lf_all.log
 
-WINOMT_FILE=''
-LF_DICT_FILE=''
-SENT_DOC_FILE=''
+WINOMT_FILE='/home/usuaris/scratch/christine.raouf.saad/winomt/original_sentences/en_all_sen.txt'
+LF_DICT_FILE='/home/usuaris/scratch/christine.raouf.saad/winomt/original_sentences/lf_representations_wino_all_1.h5'
+SENT_DOC_FILE='/home/usuaris/scratch/christine.raouf.saad/winomt/original_sentences/sen_doc_alignment_all_dic_1.h5'
 KIND_REPS='1'
 
 #training data
