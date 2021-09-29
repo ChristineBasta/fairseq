@@ -30,6 +30,7 @@ from .positional_embedding import PositionalEmbedding
 from .same_pad import SamePad
 from .scalar_bias import ScalarBias
 from .sinusoidal_positional_embedding import SinusoidalPositionalEmbedding
+from .transformer_layer_skip_last_residual_connection import TransformerEncoderLayerSkipConnection
 from .transformer_sentence_encoder_layer import TransformerSentenceEncoderLayer
 from .transformer_sentence_encoder import TransformerSentenceEncoder
 from .transpose_last import TransposeLast
@@ -72,6 +73,7 @@ __all__ = [
     "TransformerSentenceEncoder",
     "TransformerDecoderLayer",
     "TransformerEncoderLayer",
+    "TransformerEncoderLayerSkipConnection",
     "TransposeLast",
     "VGGBlock",
     "unfold1d",
