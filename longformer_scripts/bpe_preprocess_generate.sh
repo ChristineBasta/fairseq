@@ -13,8 +13,8 @@ git clone https://github.com/rsennrich/subword-nmt.git
 SRC="en"
 TGT="es"
 
-GENERATE_PREF="generate.tok.tc"
-GENERATE_PREF_OUTPUT="generate.tok.tc.doc"
+
+GENERATE_PREF="generate.tok.tc.doc"
 MODEL_DIR="/home/usuaris/scratch/christine.raouf.saad/news_v11/NCv11_en-es/lftransfomer_model"  #MODEL
 DEST_DIR="/home/usuaris/scratch/christine.raouf.saad/google_dataset/data"
 TRN_PREF="news_all.tok.tc.doc"
@@ -26,10 +26,10 @@ echo "apply bpe to " $SRC
 
 
 #$BPEROOT/learn_bpe.py -s $N_OP < ${WORKING_DIR}/${TRN_PREF}.${SRC} > ${DEST_DIR}/${TRN_PREF}.codes.${SRC}
-$BPEROOT/apply_bpe.py -c  ${MODEL_DIR}/${TRN_PREF}.codes.${SRC} < ${DEST_DIR}/${GENERATE_PREF}.${SRC} >  ${DEST_DIR}/${GENERATE_PREF_OUTPUT}.bpe.${SRC}
+$BPEROOT/apply_bpe.py -c  ${MODEL_DIR}/${TRN_PREF}.codes.${SRC} < ${DEST_DIR}/${GENERATE_PREF}.${SRC} >  ${DEST_DIR}/${GENERATE_PREF}.bpe.${SRC}
 
 
 echo "apply bpe to " $TGT
 #$BPEROOT/learn_bpe.py -s $N_OP < ${WORKING_DIR}/${TRN_PREF}.${TGT} > ${DEST_DIR}/${TRN_PREF}.codes.${TGT}
-$BPEROOT/apply_bpe.py -c  ${MODEL_DIR}/${TRN_PREF}.codes.${SRC} < ${DEST_DIR}/${GENERATE_PREF}.${TGT} >  ${DEST_DIR}/${GENERATE_PREF_OUTPUT}.bpe.${TGT}
+$BPEROOT/apply_bpe.py -c  ${MODEL_DIR}/${TRN_PREF}.codes.${SRC} < ${DEST_DIR}/${GENERATE_PREF}.${TGT} >  ${DEST_DIR}/${GENERATE_PREF}.bpe.${TGT}
 
