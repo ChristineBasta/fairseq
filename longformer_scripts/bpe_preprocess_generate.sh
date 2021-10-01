@@ -14,25 +14,22 @@ SRC="en"
 TGT="es"
 
 GENERATE_PREF="generate.tok.tc"
-MODEL_DIR="/home/usuaris/scratch/christine.raouf.saad/news_v11/NCv11_en-es/lftransfomer_model_baseline"  #MODEL
+GENERATE_PREF_OUTPUT="generate.tok.tc.doc"
+MODEL_DIR="/home/usuaris/scratch/christine.raouf.saad/news_v11/NCv11_en-es/lftransfomer_model"  #MODEL
 DEST_DIR="/home/usuaris/scratch/christine.raouf.saad/google_dataset/data"
-TRN_PREF="news_all.tok.tc"
-
-
-N_OP=1000
+TRN_PREF="news_all.tok.tc.doc"
 
 BPEROOT='subword-nmt/subword_nmt'
 #we do not learn...we apply, we learn only
 echo "apply bpe to " $SRC
 
-echo "learn_bpe.py on ${TRAIN}..."
 
 
 #$BPEROOT/learn_bpe.py -s $N_OP < ${WORKING_DIR}/${TRN_PREF}.${SRC} > ${DEST_DIR}/${TRN_PREF}.codes.${SRC}
-$BPEROOT/apply_bpe.py -c  ${MODEL_DIR}/${TRN_PREF}.codes.${SRC} < ${DEST_DIR}/${GENERATE_PREF}.${SRC} >  ${DEST_DIR}/${GENERATE_PREF}.bpe.${SRC}
+$BPEROOT/apply_bpe.py -c  ${MODEL_DIR}/${TRN_PREF}.codes.${SRC} < ${DEST_DIR}/${GENERATE_PREF}.${SRC} >  ${DEST_DIR}/${GENERATE_PREF_OUTPUT}.bpe.${SRC}
 
 
 echo "apply bpe to " $TGT
 #$BPEROOT/learn_bpe.py -s $N_OP < ${WORKING_DIR}/${TRN_PREF}.${TGT} > ${DEST_DIR}/${TRN_PREF}.codes.${TGT}
-$BPEROOT/apply_bpe.py -c  ${MODEL_DIR}/${TRN_PREF}.codes.${SRC} < ${DEST_DIR}/${GENERATE_PREF}.${TGT} >  ${DEST_DIR}/${GENERATE_PREF}.bpe.${TGT}
+$BPEROOT/apply_bpe.py -c  ${MODEL_DIR}/${TRN_PREF}.codes.${SRC} < ${DEST_DIR}/${GENERATE_PREF}.${TGT} >  ${DEST_DIR}/${GENERATE_PREF_OUTPUT}.bpe.${TGT}
 
