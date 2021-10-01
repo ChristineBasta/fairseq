@@ -21,7 +21,7 @@ TRN_PREF="train.tok.tc"
 
 N_OP=1000
 
-BPEROOT='../subword-nmt/subword_nmt'
+BPEROOT='subword-nmt/subword_nmt'
 #we do not learn...we apply, we learn only
 echo "apply bpe to " $SRC
 
