@@ -9,7 +9,7 @@ TRG=es
 #to change if we do not need the doc token
 needs_doc_token=true
 #if we need to train teh trucase or just work with what we have
-needs_truecasing=true
+needs_truecasing=false
 # number of merge operations
 bpe_operations=32000
 
@@ -52,7 +52,6 @@ do
     $mosesdecoder/scripts/recaser/truecase.perl -model $train_data_folder/tc.$TRG < $data_folder/$prefix.tok.$TRG > $data_folder/$prefix.tok.tc.$TRG
 done
 #adding <DOC> token
-failed=true
 if $needs_doc_token
 then
     for prefix in generate
