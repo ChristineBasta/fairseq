@@ -20,6 +20,7 @@ mosesdecoder='../mosesdecoder'
 data_folder='/home/usuaris/scratch/christine.raouf.saad/google_dataset/data'
 #to train tue caser
 train_data_folder='/home/usuaris/scratch/christine.raouf.saad/news_v11/NCv11_en-es/data'
+train_file='news_all'
 model_folder='/home/christine/news_micro_2/model'
 # normalize, punctuate, tokenize
 for prefix in generate
@@ -39,8 +40,8 @@ done
 # train truecaser..we have trained one
 if $needs_truecasing
 then
-  $mosesdecoder/scripts/recaser/train-truecaser.perl -corpus $train_data_folder/train.tok.$SRC -model $train_data_folder/tc.$SRC
-  $mosesdecoder/scripts/recaser/train-truecaser.perl -corpus $train_data_folder/train.tok.$TRG -model $train_data_folder/tc.$TRG
+  $mosesdecoder/scripts/recaser/train-truecaser.perl -corpus $train_data_folder/$train_file.tok.$SRC -model $train_data_folder/tc.$SRC
+  $mosesdecoder/scripts/recaser/train-truecaser.perl -corpus $train_data_folder/$train_file.tok.$TRG -model $train_data_folder/tc.$TRG
 fi
 
 # apply truecaser (cleaned training corpus)
