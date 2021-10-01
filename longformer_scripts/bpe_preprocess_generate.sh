@@ -16,7 +16,7 @@ TGT="es"
 GENERATE_PREF="generate.tok.tc"
 MODEL_DIR="/home/usuaris/scratch/christine.raouf.saad/news_v11/NCv11_en-es/lftransfomer_model_baseline"  #MODEL
 DEST_DIR="/home/usuaris/scratch/christine.raouf.saad/google_dataset/data"
-TRN_PREF="train.tok.tc"
+TRN_PREF="news_all.tok.tc"
 
 
 N_OP=1000
