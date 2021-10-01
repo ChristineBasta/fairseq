@@ -11,7 +11,7 @@ git clone https://github.com/rsennrich/subword-nmt.git
 
 
 SRC="en"
-TGT="de"
+TGT="es"
 
 GENERATE_PREF="generate.tok.tc"
 MODEL_DIR="/home/usuaris/scratch/christine.raouf.saad/news_v11/NCv11_en-es/lftransfomer_model"  #MODEL
