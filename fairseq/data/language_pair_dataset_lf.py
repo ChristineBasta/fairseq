@@ -117,7 +117,7 @@ def collate(
 
     #todo:13-aug- if the lf_reps are empty like in case of winomt
     #getting the embedding size
-    print()
+    print('***************lf reps*************')
     print(lf_reps)
 
 
