@@ -120,53 +120,53 @@ def collate(
     print('***************lf reps*************')
     print(lf_reps)
 
+    if lf_reps:
+        if 1 in lf_reps:
+            embedding_size=lf_reps[1].shape[1]
+        else:
+            for key in lf_reps:
+                embedding_size = lf_reps[key].shape[1]
+        print(embedding_size)
 
-    if 1 in lf_reps:
-        embedding_size=lf_reps[1].shape[1]
-    else:
-        for key in lf_reps:
-            embedding_size = lf_reps[key].shape[1]
-    print(embedding_size)
+        #(batch_size, longformer_embeddings)
+        doc_reps_tensor = torch.zeros((id.shape[0], embedding_size), dtype=torch.float64)
+        #for the ids that we will work only
+        mask_doc_available_ids=[]
+        #todo:check this
+        sent_batch_index=0
+        for index in id:
+            # get doc_index from sen_doc_align dictionary
+            doc_index = sen_doc_align[index.item()+1]
+            if(doc_index):
+                # checking if the doc_index is in the dictionary
+                if doc_index in lf_reps:
+                    # todo (next) load for the h5py dataset
+                    #convert to tensor as it is saved numpy
+                    doc_reps_tensor[sent_batch_index] = lf_reps[doc_index]
+                    mask_doc_available_ids.append(sent_batch_index)
+            sent_batch_index+=1
 
-    #(batch_size, longformer_embeddings)
-    doc_reps_tensor = torch.zeros((id.shape[0], embedding_size), dtype=torch.float64)
-    #for the ids that we will work only
-    mask_doc_available_ids=[]
-    #todo:check this
-    sent_batch_index=0
-    for index in id:
-        # get doc_index from sen_doc_align dictionary
-        doc_index = sen_doc_align[index.item()+1]
-        if(doc_index):
-            # checking if the doc_index is in the dictionary
-            if doc_index in lf_reps:
-                # todo (next) load for the h5py dataset
-                #convert to tensor as it is saved numpy
-                doc_reps_tensor[sent_batch_index] = lf_reps[doc_index]
-                mask_doc_available_ids.append(sent_batch_index)
-        sent_batch_index+=1
+        # ids of available docs, ds to replace
+        print('mask_doc_available:::')
+        print( mask_doc_available_ids)
+        if(len(mask_doc_available_ids)!=0):
+            print('********nooo docs*********')
+        mask_doc_available_ids_numpy = np.array(mask_doc_available_ids)
+        mask_doc_available_ids_tensor = torch.from_numpy(mask_doc_available_ids_numpy)
+        print( 'mask_doc_available_ids_tensor')
+        print(mask_doc_available_ids_tensor)
+        #start of seq without paddings, get the first token after padding
+        tokens_to_replace = src_tokens.shape[1]-src_lengths
+        print('tokens_to_replace:::')
+        print(tokens_to_replace)
 
-    # ids of available docs, ds to replace
-    print('mask_doc_available:::')
-    print( mask_doc_available_ids)
-    if(len(mask_doc_available_ids)!=0):
-        print('********nooo docs*********')
-    mask_doc_available_ids_numpy = np.array(mask_doc_available_ids)
-    mask_doc_available_ids_tensor = torch.from_numpy(mask_doc_available_ids_numpy)
-    print( 'mask_doc_available_ids_tensor')
-    print(mask_doc_available_ids_tensor)
-    #start of seq without paddings, get the first token after padding
-    tokens_to_replace = src_tokens.shape[1]-src_lengths
-    print('tokens_to_replace:::')
-    print(tokens_to_replace)
-
-    #checking if there are elements in mask_doc_available_ids_tensor
-    #added 11 Aug...can be removed
-    if(torch.numel(mask_doc_available_ids_tensor)):
-        tokens_to_replace=torch.index_select(tokens_to_replace, 0, mask_doc_available_ids_tensor)
-        doc_reps_tensor = torch.index_select(doc_reps_tensor, 0, mask_doc_available_ids_tensor)
-    doc_reps_tensor=doc_reps_tensor.detach()
-    doc_reps_tensor=doc_reps_tensor.float()
+        #checking if there are elements in mask_doc_available_ids_tensor
+        #added 11 Aug...can be removed
+        if(torch.numel(mask_doc_available_ids_tensor)):
+            tokens_to_replace=torch.index_select(tokens_to_replace, 0, mask_doc_available_ids_tensor)
+            doc_reps_tensor = torch.index_select(doc_reps_tensor, 0, mask_doc_available_ids_tensor)
+        doc_reps_tensor=doc_reps_tensor.detach()
+        doc_reps_tensor=doc_reps_tensor.float()
     batch = {
         # todo(christine) add in net_input the log_former output..I guess we need to send it withe the correct dimensions
         "id": id,
