@@ -117,10 +117,9 @@ def collate(
 
     #todo:13-aug- if the lf_reps are empty like in case of winomt
     #getting the embedding size
-    print(lf_reps[0].shape[1])
-    print(lf_reps[1].shape[1])
-    for key in lf_reps:
-        print(lf_reps[key].shape[1])
+    print()
+    print(lf_reps)
+
 
     if 1 in lf_reps:
         embedding_size=lf_reps[1].shape[1]
