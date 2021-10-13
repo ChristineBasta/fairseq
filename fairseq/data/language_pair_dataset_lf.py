@@ -122,9 +122,7 @@ def collate(
     else:
         for key in lf_reps:
             embedding_size = lf_reps[key].shape[1]
-
-
-
+    print(embedding_size)
     #(batch_size, longformer_embeddings)
     doc_reps_tensor = torch.zeros((id.shape[0], embedding_size), dtype=torch.float64)
     #for the ids that we will work only
