@@ -405,11 +405,11 @@ class TransformerEncoder(FairseqEncoder):
         layer_to_replace = math.ceil(self.num_layers/2)
         if(args.after_skip and args.two_skip):
             #trying 2, 4
-            self.layers[layer_to_replace - 1] = layer_skip_connection
-            self.layers[layer_to_replace + 1] = layer_skip_connection
+            self.layers[layer_to_replace - 1] = self.build_encoder_layer_skip_connection(args)
+            self.layers[layer_to_replace + 1] = self.build_encoder_layer_skip_connection(args)
         elif(args.before_skip and args.two_skip):
-            self.layers[layer_to_replace] = layer_skip_connection
-            self.layers[layer_to_replace - 1] = layer_skip_connection
+            self.layers[layer_to_replace] = self.build_encoder_layer_skip_connection(args)
+            self.layers[layer_to_replace - 1] = self.build_encoder_layer_skip_connection(args)
         elif(args.mid_skip):
             self.layers[layer_to_replace] = layer_skip_connection
         elif (args.after_skip):
