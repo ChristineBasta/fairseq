@@ -412,10 +412,23 @@ class TransformerEncoder(FairseqEncoder):
         self.layers.extend(
             [self.build_encoder_layer(args) for i in range(args.encoder_layers)]
         )
+        # skip connection in the middle
         layer_skip_connection = self.build_encoder_layer_skip_connection(args)
         self.num_layers = len(self.layers)
         layer_to_replace = math.ceil(self.num_layers / 2)
-        self.layers[layer_to_replace] = layer_skip_connection
+        if (args.after_skip and args.two_skip):
+            # trying 2, 4
+            self.layers[layer_to_replace] = self.build_encoder_layer_skip_connection(args)
+            self.layers[layer_to_replace + 1] = self.build_encoder_layer_skip_connection(args)
+        elif (args.before_skip and args.two_skip):
+            self.layers[layer_to_replace] = self.build_encoder_layer_skip_connection(args)
+            self.layers[layer_to_replace - 1] = self.build_encoder_layer_skip_connection(args)
+        elif (args.mid_skip):
+            self.layers[layer_to_replace] = layer_skip_connection
+        elif (args.after_skip):
+            self.layers[layer_to_replace + 1] = layer_skip_connection
+        elif (args.before_skip):
+            self.layers[layer_to_replace - 1] = layer_skip_connection
 
 
         if args.encoder_normalize_before:
@@ -1220,6 +1233,10 @@ def transformer_iwslt_de_en(args):
     args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 4)
     args.decoder_layers = getattr(args, "decoder_layers", 6)
     args.lf_rep_dim=getattr(args, "lf-rep-dim", 768)
+    args.after_skip = getattr(args, "after_skip", True)
+    args.two_skip = getattr(args, "two_skip", True)
+    args.before_skip = getattr(args, "before_skip", False)
+    args.mid_skip = getattr(args, "mid_skip", False)
     base_architecture(args)
 
 
