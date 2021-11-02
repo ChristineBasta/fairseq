@@ -1233,9 +1233,9 @@ def transformer_iwslt_de_en(args):
     args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 4)
     args.decoder_layers = getattr(args, "decoder_layers", 6)
     args.lf_rep_dim=getattr(args, "lf-rep-dim", 768)
-    args.after_skip = getattr(args, "after_skip", False)
-    args.two_skip = getattr(args, "two_skip", False)
-    args.before_skip = getattr(args, "before_skip", True)
+    args.after_skip = getattr(args, "after_skip", True)
+    args.two_skip = getattr(args, "two_skip", True)
+    args.before_skip = getattr(args, "before_skip", False)
     args.mid_skip = getattr(args, "mid_skip", False)
     base_architecture(args)
 

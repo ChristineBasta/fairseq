@@ -147,10 +147,9 @@ def collate(
             sent_batch_index+=1
 
         # ids of available docs, ds to replace
-        #print('mask_doc_available:::')
-        #print( mask_doc_available_ids)
-        if(len(mask_doc_available_ids)!=0):
-            print('********nooo docs*********')
+        print('mask_doc_available:::')
+        print( len(mask_doc_available_ids))
+
         mask_doc_available_ids_numpy = np.array(mask_doc_available_ids)
         mask_doc_available_ids_tensor = torch.from_numpy(mask_doc_available_ids_numpy)
         #print( 'mask_doc_available_ids_tensor')
