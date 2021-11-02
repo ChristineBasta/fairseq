@@ -27,8 +27,8 @@ def collate(
 ):
     if len(samples) == 0:
         return {}
-    print('Length of samples:')
-    print(len(samples))
+    #print('Length of samples:')
+    #print(len(samples))
     def merge(key, left_pad, move_eos_to_beginning=False, pad_to_length=None):
         return data_utils.collate_tokens(
             [s[key] for s in samples],
@@ -117,8 +117,8 @@ def collate(
 
     #todo:13-aug- if the lf_reps are empty like in case of winomt
     #getting the embedding size
-    print('***************lf reps*************')
-    print(lf_reps)
+    #print('***************lf reps*************')
+    #print(lf_reps)
 
     if lf_reps:
         if 1 in lf_reps:
@@ -126,7 +126,7 @@ def collate(
         else:
             for key in lf_reps:
                 embedding_size = lf_reps[key].shape[1]
-        print(embedding_size)
+        #print(embedding_size)
 
         #(batch_size, longformer_embeddings)
         doc_reps_tensor = torch.zeros((id.shape[0], embedding_size), dtype=torch.float64)
@@ -147,18 +147,18 @@ def collate(
             sent_batch_index+=1
 
         # ids of available docs, ds to replace
-        print('mask_doc_available:::')
-        print( mask_doc_available_ids)
+        #print('mask_doc_available:::')
+        #print( mask_doc_available_ids)
         if(len(mask_doc_available_ids)!=0):
             print('********nooo docs*********')
         mask_doc_available_ids_numpy = np.array(mask_doc_available_ids)
         mask_doc_available_ids_tensor = torch.from_numpy(mask_doc_available_ids_numpy)
-        print( 'mask_doc_available_ids_tensor')
-        print(mask_doc_available_ids_tensor)
+        #print( 'mask_doc_available_ids_tensor')
+        #print(mask_doc_available_ids_tensor)
         #start of seq without paddings, get the first token after padding
         tokens_to_replace = src_tokens.shape[1]-src_lengths
-        print('tokens_to_replace:::')
-        print(tokens_to_replace)
+        #print('tokens_to_replace:::')
+        #print(tokens_to_replace)
 
         #checking if there are elements in mask_doc_available_ids_tensor
         #added 11 Aug...can be removed

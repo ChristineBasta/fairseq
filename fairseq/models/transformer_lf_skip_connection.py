@@ -438,8 +438,8 @@ class TransformerEncoder(FairseqEncoder):
 
         #segment embeddings
         self.lf_rep_dim=args.lf_rep_dim
-        print('lf_rep_dim in transformer class:')
-        print(self.lf_rep_dim)
+        #print('lf_rep_dim in transformer class:')
+        #print(self.lf_rep_dim)
         self.lin_lf = nn.Linear(self.lf_rep_dim, embed_dim)
 
     def build_encoder_layer(self, args):
@@ -487,9 +487,9 @@ class TransformerEncoder(FairseqEncoder):
         # TODO(Christine) lf_reps in the first <doc> token!
         #linear?
         # from long_former embedding to word embeddings
-        print('longformer reps shape:')
+        #print('longformer reps shape:')
         #print(lf_reps.shape)
-        print('x shape:')
+        #print('x shape:')
         #print(x.shape)
 
         # added 11 Aug...can be removed
@@ -497,15 +497,15 @@ class TransformerEncoder(FairseqEncoder):
             if(torch.numel(doc_exist_ids)):
                 if(lf_reps is not None):
                     lf_reps_after_trans = self.lin_lf(lf_reps)
-                    print('longformer reps after trans:')
-                    print(lf_reps_after_trans.shape)
+                    #print('longformer reps after trans:')
+                    #print(lf_reps_after_trans.shape)
                 #x[mask_ids, 0,:] for certain ids to be replaced
                 #x[mask_ids,pad,:] for certain ids with the token after left pad
-                    x[doc_exist_ids,after_pad_tokens_ids,:] = lf_reps_after_trans
-                    print('after change:')
-                    print('x shape:')
-                    print(x.shape)
-                    print( x[doc_exist_ids,after_pad_tokens_ids,:])
+                    #x[doc_exist_ids,after_pad_tokens_ids,:] = lf_reps_after_trans
+                    #print('after change:')
+                    #print('x shape:')
+                    #print(x.shape)
+                    #print( x[doc_exist_ids,after_pad_tokens_ids,:])
 
 
 
