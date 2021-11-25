@@ -262,6 +262,13 @@ class TranslationConfig(FairseqDataclass):
     eval_bleu_print_samples: bool = field(
         default=False, metadata={"help": "print sample generations during validation"}
     )
+    encoding_path:  Optional[str] = field(
+        default="encodings.json",
+        metadata={
+            "help": "encodings output path",
+            "argparse_alias": "-enc-path",
+        },
+    )
 
 
 @register_task("translation", dataclass=TranslationConfig)

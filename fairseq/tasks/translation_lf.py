@@ -290,6 +290,13 @@ class TranslationlfConfig(FairseqDataclass):
         },
     )
 
+    encoding_path:  Optional[str] = field(
+        default="encodings.json",
+        metadata={
+            "help": "encodings output path",
+            "argparse_alias": "-enc-path",
+        },
+    )
 
 
     # todo (next) three paths for h5py files
