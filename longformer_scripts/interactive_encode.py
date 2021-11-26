@@ -17,12 +17,12 @@ import time
 from argparse import Namespace
 from collections import namedtuple
 import json
-
+import sys
 import numpy as np
 import torch
 from fairseq import checkpoint_utils, distributed_utils, options, tasks, utils
 from fairseq.dataclass.configs import FairseqConfig
-from fairseq.sequence_encoder import SequenceEncoder
+from sequence_encoder import SequenceEncoder
 from fairseq.dataclass.utils import convert_namespace_to_omegaconf
 from fairseq.token_generation_constraints import pack_constraints, unpack_constraints
 from fairseq_cli.generate import get_symbols_to_strip_from_output
@@ -168,7 +168,7 @@ def main(cfg: FairseqConfig):
         model.prepare_for_inference_(cfg)
 
     # Initialize generator
-    generator = SequenceEncoder(models, cfg.generation)
+    generator = SequenceEncoder(models)
 
     # Handle tokenization and BPE
     tokenizer = task.build_tokenizer(cfg.tokenizer)
@@ -230,15 +230,16 @@ def main(cfg: FairseqConfig):
             encodings = task.inference_step(
                 generator, models, sample, constraints=constraints
             )
+
+            encodings[0]['encoder_out'][0] = encodings[0]['encoder_out'][0].squeeze(1)
             data[str(current_idx)] = {
                 'src':src_tokens.cpu().data.numpy().tolist(),
-                'encoding':encodings['encoder_out'].cpu().data.numpy().tolist()
+                'encoding':encodings[0]['encoder_out'][0].cpu().data.numpy().tolist()
             }
             current_idx += 1
 
     print(current_idx, len(data))
-    with open(cfg.task.encodings.json,'w') as f:
-        json.dump(data,f)
+    json.dump(data,sys.stderr)
     print('Done')
 
 def cli_main():
